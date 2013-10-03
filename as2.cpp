@@ -26,6 +26,8 @@ void loadScene(std::string file) {
 
   //Camera
   Camera* camera = new Camera(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  //Surfaces
+  vector<Surface*> surfaces;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -285,7 +287,7 @@ void loadScene(std::string file) {
     }
   
 
-    Scene* scene = new Scene(camera, width, height);
+    Scene* scene = new Scene(camera, surfaces, width, height);
 
     //NOTE: this sample will overwrite the file or test.png without warning!
     const char* filename = fname.c_str();
