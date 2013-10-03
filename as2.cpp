@@ -3,15 +3,29 @@
 #include <vector>
 #include <iostream>
 #include "lodepng.h"
+#include "camera.h"
+#include "scene.h"
 
 using namespace std;
 
 
+void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
+{
+  //Encode the image
+  unsigned error = lodepng::encode(filename, image, width, height);
+
+  //if there's an error, display it
+  if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+}
+
 void loadScene(std::string file) {
 
   //store variables and set stuff at the end
-  int width, height;
-  std::string fname = "output.bmp";
+  int width = 1000, height = 1000;
+  std::string fname = "output.png";
+
+  //Camera
+  Camera* camera = new Camera(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -62,19 +76,19 @@ void loadScene(std::string file) {
       //camera lookfromx lookfromy lookfromz lookatx lookaty lookatz upx upy upz fov
       //  speciﬁes the camera in the standard way, as in homework 2.
       else if(!splitline[0].compare("camera")) {
-        // lookfrom:
-        //    atof(splitline[1].c_str())
-        //    atof(splitline[2].c_str())
-        //    atof(splitline[3].c_str())
-        // lookat:
-        //    atof(splitline[4].c_str())
-        //    atof(splitline[5].c_str())
-        //    atof(splitline[6].c_str())
-        // up:
-        //    atof(splitline[7].c_str())
-        //    atof(splitline[8].c_str())
-        //    atof(splitline[9].c_str())
-        // fov: atof(splitline[10].c_str());
+        float from_x = atof(splitline[1].c_str());
+        float from_y = atof(splitline[2].c_str());
+        float from_z = atof(splitline[3].c_str());
+        float lookat_x = atof(splitline[4].c_str());
+        float lookat_y = atof(splitline[5].c_str());
+        float lookat_z = atof(splitline[6].c_str());
+        float up_x = atof(splitline[7].c_str());
+        float up_y = atof(splitline[8].c_str());
+        float up_z = atof(splitline[9].c_str());
+        float fov = atof(splitline[10].c_str());
+
+        delete camera;
+        camera = new Camera(from_x, from_y, from_z, lookat_x, lookat_y, lookat_z, up_x, up_y, up_z, fov);
       }
 
       //sphere x y z radius
@@ -270,41 +284,38 @@ void loadScene(std::string file) {
       }
     }
   
+
+    Scene* scene = new Scene(camera, width, height);
+
+    //NOTE: this sample will overwrite the file or test.png without warning!
+    const char* filename = fname.c_str();
+
+    //generate some image
+    std::vector<unsigned char> image;
+    image.resize(width * height * 4);
+    for (int y = 0; y < height; y++)
+      for (int x = 0; x < width; x++) {
+        ThreeDVector* color = scene->get_color(x, y);
+        image[4 * width * y + 4 * x + 0] = color->x;
+        image[4 * width * y + 4 * x + 1] = color->y;
+        image[4 * width * y + 4 * x + 2] = color->z;
+        image[4 * width * y + 4 * x + 3] = 255;
+        delete color;
+      }
+
+    createPng(filename, image, width, height);
+
+
     inpfile.close();
   }
 
 }
 
-void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
-{
-  //Encode the image
-  unsigned error = lodepng::encode(filename, image, width, height);
-
-  //if there's an error, display it
-  if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
-}
-
 int main(int argc, char *argv[]) {
 
-  //NOTE: this sample will overwrite the file or test.png without warning!
-  const char* filename = argc > 1 ? argv[1] : "test.png";
-
-  //generate some image
-  unsigned width = 512, height = 512;
-  std::vector<unsigned char> image;
-  image.resize(width * height * 4);
-  for(unsigned y = 0; y < height; y++)
-    for(unsigned x = 0; x < width; x++)
-    {
-      image[4 * width * y + 4 * x + 0] = 255;
-      image[4 * width * y + 4 * x + 1] = 0;
-      image[4 * width * y + 4 * x + 2] = 0;
-      image[4 * width * y + 4 * x + 3] = 255;
-    }
-
-  encodeOneStep(filename, image, width, height);
-
-
+  if (argc > 1) {
+    loadScene(argv[1]);
+  }
 
   return 0;
 }
