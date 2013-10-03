@@ -2,9 +2,9 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
-#include <Magick++.h>
+#include "lodepng.h"
 
-using namespace Magick;
+using namespace std;
 
 
 void loadScene(std::string file) {
@@ -275,15 +275,36 @@ void loadScene(std::string file) {
 
 }
 
+void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
+{
+  //Encode the image
+  unsigned error = lodepng::encode(filename, image, width, height);
+
+  //if there's an error, display it
+  if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
+}
+
 int main(int argc, char *argv[]) {
 
-  if (argc > 1) {
-    loadScene(std::string(argv[1]));
-  }
+  //NOTE: this sample will overwrite the file or test.png without warning!
+  const char* filename = argc > 1 ? argv[1] : "test.png";
 
-  Image my_image("640x480", "red");
-  my_image.magick("png");
-  my_image.write("HELLYEAH.png");
+  //generate some image
+  unsigned width = 512, height = 512;
+  std::vector<unsigned char> image;
+  image.resize(width * height * 4);
+  for(unsigned y = 0; y < height; y++)
+    for(unsigned x = 0; x < width; x++)
+    {
+      image[4 * width * y + 4 * x + 0] = 255;
+      image[4 * width * y + 4 * x + 1] = 0;
+      image[4 * width * y + 4 * x + 2] = 0;
+      image[4 * width * y + 4 * x + 3] = 255;
+    }
+
+  encodeOneStep(filename, image, width, height);
+
+
 
   return 0;
 }
