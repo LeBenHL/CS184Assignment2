@@ -12,11 +12,6 @@ class Camera{
 		// My UpVector
 		ThreeDVector* up;
 
-		//Orthonormal basis
-		ThreeDVector* u;
-		ThreeDVector* v;
-		ThreeDVector* w;
-
 
 		float fov;
 		Camera(float, float, float, float, float, float, float, float, float, float);

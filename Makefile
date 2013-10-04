@@ -1,4 +1,4 @@
-OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o
+OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o
 CC = g++
 LDFLAGS = 
 	
@@ -20,10 +20,12 @@ pixel.o: pixel.h pixel.cpp
 	$(CC) $(LDFLAGS) -c pixel.cpp -o pixel.o
 ray.o: ray.h ray.cpp
 	$(CC) $(LDFLAGS) -c ray.cpp -o ray.o
-scene.o: scene.h scene.cpp three_d_vector.h ray.h camera.h surface.h
+scene.o: scene.h scene.cpp three_d_vector.h ray.h camera.h surface.h sampler.h
 	$(CC) $(LDFLAGS) -c scene.cpp -o scene.o
 surface.o: surface.h surface.cpp ray.h
 	$(CC) $(LDFLAGS) -c surface.cpp -o surface.o	
+sampler.o: sampler.h sampler.cpp three_d_vector.h
+	$(CC) $(LDFLAGS) -c sampler.cpp -o sampler.o	
 
 clean: 
 	$(RM) *.o as2

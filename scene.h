@@ -6,18 +6,17 @@
 #include "ray.h"
 #include "camera.h"
 #include "surface.h"
+#include "sampler.h"
+
+using namespace std;
 
 class Scene{
 	public:
 		Camera* camera;
-		int image_width;
-		int image_height;
-		int l;
-		int r;
-		int t;
-		int b;
 		std::vector<Surface*> surfaces;
-		Scene(Camera*, std::vector<Surface*>, int, int, int, int);
+		Sampler* sampler;
+
+		Scene(Camera*, std::vector<Surface*>, int, int);
 		~Scene();
 		ThreeDVector* get_color(int, int);
 		ThreeDVector* get_color_helper(int, int, int);
