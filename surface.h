@@ -5,7 +5,7 @@
 
 class Surface {
 	public:
-		virtual bool hit(Ray* ray, Record* record);
+		virtual bool hit(Ray* ray, Record* record) = 0;
 };
 
 #endif

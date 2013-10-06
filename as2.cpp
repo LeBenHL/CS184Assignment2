@@ -5,6 +5,7 @@
 #include "lodepng.h"
 #include "camera.h"
 #include "scene.h"
+#include "sphere.h"
 
 using namespace std;
 
@@ -97,13 +98,20 @@ void loadScene(std::string file) {
       //  Deﬁnes a sphere with a given position and radius.
       else if(!splitline[0].compare("sphere")) {
         // x: atof(splitline[1].c_str())
-        // y: atof(splitline[1].c_str())
-        // z: atof(splitline[1].c_str())
+        // y: atof(splitline[2].c_str())
+        // z: atof(splitline[3].c_str())
         // r: atof(splitline[4].c_str())
         // Create new sphere:
         //   Store 4 numbers
         //   Store current property values
         //   Store current top of matrix stack
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        float radius = atof(splitline[4].c_str());
+        ThreeDVector* center = new ThreeDVector(x, y, z);
+        Sphere* sphere = new Sphere(center, radius);
+        surfaces.push_back(sphere);
       }
       //maxverts number
       //  Deﬁnes a maximum number of vertices for later triangle speciﬁcations. 

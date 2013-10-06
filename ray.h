@@ -8,8 +8,7 @@
 using namespace std;
 
 struct Record{
-    float t_intersect; 
-    ThreeDVector* intersect_point;
+    float t_hit; 
 }; 
 
 class Ray{

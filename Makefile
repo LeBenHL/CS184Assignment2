@@ -1,4 +1,4 @@
-OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o raytracer.o
+OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o raytracer.o sphere.o
 CC = g++
 LDFLAGS = 
 	
@@ -6,7 +6,7 @@ RM = /bin/rm -f
 all: main 
 main: $(OBJS)
 	$(CC) $(LDFLAGS) -o as2 $(OBJS) $(LDFLAGS) 
-as2.o: as2.cpp lodepng.h camera.h pixel.h
+as2.o: as2.cpp lodepng.h camera.h scene.h sphere.h
 	$(CC) $(LDFLAGS) -c as2.cpp -o as2.o
 point_light.o: point_light.h point_light.cpp light.h scene.h
 	$(CC) $(LDFLAGS) -c point_light.cpp -o point_light.o
@@ -28,6 +28,8 @@ sampler.o: sampler.h sampler.cpp three_d_vector.h
 	$(CC) $(LDFLAGS) -c sampler.cpp -o sampler.o	
 raytracer.o: raytracer.h raytracer.cpp ray.h three_d_vector.h surface.h
 	$(CC) $(LDFLAGS) -c raytracer.cpp -o raytracer.o
+sphere.o: sphere.h sphere.cpp surface.h three_d_vector.h ray.h
+	$(CC) $(LDFLAGS) -c sphere.cpp -o sphere.o
 
 clean: 
 	$(RM) *.o as2

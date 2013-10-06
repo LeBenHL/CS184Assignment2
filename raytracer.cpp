@@ -9,12 +9,11 @@ ThreeDVector* RayTracer::trace(Ray* ray) {
 	Surface* first_hit;
 	Record* record = new Record();
 	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
-		float t_hit;
 		Surface* surface = *it;
     	if (surface->hit(ray, record)) {
     		hit = true;
     		first_hit = surface;
-    		ray->t_max = t_hit;
+    		ray->t_max = record->t_hit;
     	} 
 	}
 

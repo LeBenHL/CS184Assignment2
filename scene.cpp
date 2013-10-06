@@ -18,6 +18,7 @@ ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {
 	ThreeDVector* color_summation = new ThreeDVector(0, 0, 0);	
 	for(vector<ThreeDVector*>::iterator it = samples.begin(); it != samples.end(); ++it) {
     	Ray* view_ray = this->camera->get_view_ray(*it);
+    	//cout << view_ray->repr() << endl;
     	ThreeDVector* color_sample = this->tracer->trace(view_ray);
     	color_summation->vector_add_bang(color_sample);
     	delete color_sample;
