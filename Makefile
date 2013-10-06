@@ -14,7 +14,7 @@ directional_light.o: directional_light.h directional_light.cpp light.h three_d_v
 	$(CC) $(LDFLAGS) -c directional_light.cpp -o directional_light.o
 three_d_vector.o: three_d_vector.h three_d_vector.cpp
 	$(CC) $(LDFLAGS) -c three_d_vector.cpp -o three_d_vector.o
-camera.o: camera.h camera.cpp
+camera.o: camera.h camera.cpp ray.h three_d_vector.h
 	$(CC) $(LDFLAGS) -c camera.cpp -o camera.o
 pixel.o: pixel.h pixel.cpp
 	$(CC) $(LDFLAGS) -c pixel.cpp -o pixel.o

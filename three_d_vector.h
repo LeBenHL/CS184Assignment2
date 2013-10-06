@@ -11,7 +11,7 @@ class ThreeDVector{
 		ThreeDVector* normalize();
 		float dot_product(ThreeDVector*);
 		ThreeDVector* scalar_multiply(float k);
-		void vector_add(ThreeDVector*);
+		ThreeDVector* vector_add(ThreeDVector*);
 		ThreeDVector* vector_subtract(ThreeDVector*);
 		ThreeDVector* vector_multiply(ThreeDVector*);
 		ThreeDVector* cross_product(ThreeDVector*);

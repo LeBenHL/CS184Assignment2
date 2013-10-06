@@ -33,10 +33,8 @@ ThreeDVector* ThreeDVector::scalar_multiply(float k){
 	return new ThreeDVector(this->x * k, this->y * k, this->z * k);
 }
 
-void ThreeDVector::vector_add(ThreeDVector* v){
-	this->x += v->x;
-	this->y += v->y;
-	this->z += v->z;
+ThreeDVector* ThreeDVector::vector_add(ThreeDVector* v){
+	return new ThreeDVector(this->x + v->x, this->y + v->y, this->z + v->z);
 }
 
 ThreeDVector* ThreeDVector::vector_subtract(ThreeDVector* v){
@@ -56,7 +54,7 @@ ThreeDVector* ThreeDVector::clone(){
 }
 
 char* ThreeDVector::repr() {
-	char buffer[500];
+	char* buffer = new char[1000];
 	sprintf(buffer, "<ThreeDVector, x = %0.2f, y = %0.2f, z = %0.2f>", this->x, this->y, this->z);
 	return buffer;
 }
