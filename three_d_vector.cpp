@@ -33,8 +33,20 @@ ThreeDVector* ThreeDVector::scalar_multiply(float k){
 	return new ThreeDVector(this->x * k, this->y * k, this->z * k);
 }
 
+void ThreeDVector::scalar_multiply_bang(float k){	
+	this->x *= k;
+	this->y *= k;
+	this->z *= k;
+}
+
 ThreeDVector* ThreeDVector::vector_add(ThreeDVector* v){
 	return new ThreeDVector(this->x + v->x, this->y + v->y, this->z + v->z);
+}
+
+void ThreeDVector::vector_add_bang(ThreeDVector* v){
+	this->x += v->x;
+	this->y += v->y;
+	this->z += v->z;
 }
 
 ThreeDVector* ThreeDVector::vector_subtract(ThreeDVector* v){

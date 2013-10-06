@@ -34,7 +34,7 @@ Ray* Camera::get_view_ray(ThreeDVector* screen_pos) {
     delete scaled_v;
     delete w_plus_u;
 
-    return new Ray(origin, w_plus_u_plus_v);
+    return new Ray(origin, w_plus_u_plus_v, 0, numeric_limits<float>::infinity());
 
 }
 

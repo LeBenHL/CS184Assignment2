@@ -2,9 +2,11 @@
 
 using namespace std;
 
-Ray::Ray(ThreeDVector* _position, ThreeDVector* _direction) {
+Ray::Ray(ThreeDVector* _position, ThreeDVector* _direction, float _t_min, float _t_max) {
 	position = _position;
 	direction = _direction;
+	t_min = _t_min;
+	t_max = _t_max;
 }
 
 char* Ray::repr() {
@@ -16,6 +18,7 @@ char* Ray::repr() {
 	delete position_repr;
 	return buffer;
 }
+
 
 Ray::~Ray(){
 	delete position;

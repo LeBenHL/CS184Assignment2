@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "surface.h"
 #include "sampler.h"
+#include "raytracer.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Scene{
 		Camera* camera;
 		std::vector<Surface*> surfaces;
 		Sampler* sampler;
+		RayTracer* tracer;
 
 		Scene(Camera*, std::vector<Surface*>, int, int);
 		~Scene();
