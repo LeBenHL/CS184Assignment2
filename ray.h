@@ -19,6 +19,7 @@ class Ray{
 		float t_max;
 		Ray(ThreeDVector* position, ThreeDVector* direction, float t_min, float t_max);
 		char* repr();
+		ThreeDVector* point_at(float t);
 		~Ray();
 };
 

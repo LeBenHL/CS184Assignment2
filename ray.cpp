@@ -19,6 +19,13 @@ char* Ray::repr() {
 	return buffer;
 }
 
+ThreeDVector* Ray::point_at(float t){
+	ThreeDVector* t_times_direction = this->direction->scalar_multiply(t);
+	ThreeDVector* point = this->position->vector_add(t_times_direction);
+	delete t_times_direction;
+	return point;
+}
+
 
 Ray::~Ray(){
 	delete position;

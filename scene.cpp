@@ -1,11 +1,15 @@
 #include "scene.h"
 
-Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, int width, int height) {
+Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height) {
 	camera = _camera;
 	surfaces = _surfaces;
+	lights = _lights;
 
-	sampler = new Sampler(width, height);
-	tracer = new RayTracer(surfaces);
+	float focal_length = 1;
+
+	camera->focal_length = focal_length;
+	sampler = new Sampler(width, height, camera->fov, focal_length);
+	tracer = new RayTracer(surfaces, lights);
 }
 
 ThreeDVector* Scene::get_color(int x,int y) {
@@ -18,7 +22,6 @@ ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {
 	ThreeDVector* color_summation = new ThreeDVector(0, 0, 0);	
 	for(vector<ThreeDVector*>::iterator it = samples.begin(); it != samples.end(); ++it) {
     	Ray* view_ray = this->camera->get_view_ray(*it);
-    	//cout << view_ray->repr() << endl;
     	ThreeDVector* color_sample = this->tracer->trace(view_ray);
     	color_summation->vector_add_bang(color_sample);
     	delete color_sample;

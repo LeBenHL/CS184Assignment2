@@ -1,11 +1,17 @@
 #include "sampler.h"
 
-Sampler::Sampler(int i_w, int i_h){
+#include <cmath>
+
+Sampler::Sampler(int i_w, int i_h, float fov, float focal_length) {
 	image_width = i_w;
 	image_height = i_h;
 
-	LL = new ThreeDVector(-1, -1, 0);
-	UR = new ThreeDVector(1, 1, 0);
+	float plane_height = tan(fov/2) * 2 * focal_length;
+	float plane_width = plane_height * (image_width / image_height);
+
+
+	LL = new ThreeDVector(-plane_width/2, -plane_height/2, 0);
+	UR = new ThreeDVector(plane_width/2, plane_height/2, 0);
 }
 
 vector<ThreeDVector*>  Sampler::get_sample(int x, int y, int grid_size){

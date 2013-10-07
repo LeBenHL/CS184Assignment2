@@ -50,6 +50,13 @@ bool Sphere::hit(Ray* ray, Record* record) {
 
 }
 
+ThreeDVector* Sphere::get_normal(ThreeDVector* surface_point){
+	ThreeDVector* surface_minus_center = surface_point->vector_subtract(this->center);
+	ThreeDVector* normal = surface_minus_center->normalize();
+	delete surface_minus_center;
+	return normal;
+}
+
 Sphere::~Sphere() {
 	delete center;
 }

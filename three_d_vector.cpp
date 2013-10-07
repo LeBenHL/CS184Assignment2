@@ -23,6 +23,16 @@ ThreeDVector* ThreeDVector::normalize(){
 	//cout << "AFTER: " << this->x << ", " << this->y << ", " << this->z << endl;
 }
 
+void ThreeDVector::normalize_bang(){
+	//cout << "BEFORE: " << this->x << ", " << this->y << ", " << this->z << endl;
+	float mag = magnitude();
+	this->x /= mag;
+	this->y /= mag;
+	this->z /= mag;
+	//cout << "AFTER: " << this->x << ", " << this->y << ", " << this->z << endl;
+}
+
+
 
 float ThreeDVector::dot_product(ThreeDVector* v){
 	return this->x * v->x + this->y * v->y + this->z * v->z;

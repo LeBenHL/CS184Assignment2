@@ -14,7 +14,7 @@ class Sampler{
 		ThreeDVector* LL;
 		ThreeDVector* UR;
 
-		Sampler(int, int);
+		Sampler(int, int, float fov, float focal_length);
 		vector<ThreeDVector*> get_sample(int, int, int);
 };
 

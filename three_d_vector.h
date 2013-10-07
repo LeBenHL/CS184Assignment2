@@ -9,6 +9,7 @@ class ThreeDVector{
 		ThreeDVector(float=0, float=0, float=0);
 		float magnitude();
 		ThreeDVector* normalize();
+		void normalize_bang();
 		float dot_product(ThreeDVector*);
 		ThreeDVector* scalar_multiply(float k);
 		void scalar_multiply_bang(float k);

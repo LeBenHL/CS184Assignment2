@@ -7,7 +7,6 @@ Camera::Camera(float lf_x, float lf_y, float lf_z, float la_x, float la_y, float
     look_at = new ThreeDVector(la_x, la_y, la_z);
     up = new ThreeDVector(up_x, up_y, up_z);
     fov = field_of_view;
-    focal_length = 1;
 
     ThreeDVector* pos_w = look_at->normalize();
 

@@ -6,9 +6,12 @@
 #include "camera.h"
 #include "scene.h"
 #include "sphere.h"
+#include "directional_light.h"
+#include "point_light.h"
 
 using namespace std;
 
+ThreeDVector* global_ambient = new ThreeDVector(0, 0, 0);
 
 void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
@@ -29,6 +32,11 @@ void loadScene(std::string file) {
   Camera* camera = new Camera(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   //Surfaces
   vector<Surface*> surfaces;
+  //LIGHTS CAMERA AND ACTION BUT NOT CAMERA (see above)
+  vector<Light*> lights;
+
+  //THE CURRENT SURFACE
+  Surface* current_surface;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -111,6 +119,7 @@ void loadScene(std::string file) {
         float radius = atof(splitline[4].c_str());
         ThreeDVector* center = new ThreeDVector(x, y, z);
         Sphere* sphere = new Sphere(center, radius);
+        current_surface = sphere;
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -224,24 +233,28 @@ void loadScene(std::string file) {
       //directional x y z r g b
       //  The direction to the light source, and the color, as in OpenGL.
       else if(!splitline[0].compare("directional")) {
-        // x: atof(splitline[1].c_str()),
-        // y: atof(splitline[2].c_str()),
-        // z: atof(splitline[3].c_str()));
-        // r: atof(splitline[4].c_str()),
-        // g: atof(splitline[5].c_str()),
-        // b: atof(splitline[6].c_str()));
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        float r = atof(splitline[4].c_str());
+        float g = atof(splitline[5].c_str());
+        float b = atof(splitline[6].c_str());
         // add light to scene...
+        DirectionalLight* light = new DirectionalLight(x, y, z, r, g, b);
+        lights.push_back(light);
       }
       //point x y z r g b
       //  The location of a point source and the color, as in OpenGL.
       else if(!splitline[0].compare("point")) {
-        // x: atof(splitline[1].c_str()),
-        // y: atof(splitline[2].c_str()),
-        // z: atof(splitline[3].c_str()));
-        // r: atof(splitline[4].c_str()),
-        // g: atof(splitline[5].c_str()),
-        // b: atof(splitline[6].c_str()));
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        float r = atof(splitline[4].c_str());
+        float g = atof(splitline[5].c_str());
+        float b = atof(splitline[6].c_str());
         // add light to scene...
+        PointLight* light = new PointLight(x, y, z, r, g, b);
+        lights.push_back(light);
       }
       //attenuation const linear quadratic
       //  Sets the constant, linear and quadratic attenuations 
@@ -255,32 +268,36 @@ void loadScene(std::string file) {
       //  The global ambient color to be added for each object 
       //  (default is .2,.2,.2)
       else if(!splitline[0].compare("ambient")) {
-        // r: atof(splitline[1].c_str())
-        // g: atof(splitline[2].c_str())
-        // b: atof(splitline[3].c_str())
+        float r = atof(splitline[1].c_str());
+        float g = atof(splitline[2].c_str());
+        float b = atof(splitline[3].c_str());
+        global_ambient = new ThreeDVector(r, g, b);
       }
 
       //diﬀuse r g b
       //  speciﬁes the diﬀuse color of the surface.
       else if(!splitline[0].compare("diffuse")) {
-        // r: atof(splitline[1].c_str())
-        // g: atof(splitline[2].c_str())
-        // b: atof(splitline[3].c_str())
+        float r = atof(splitline[1].c_str());
+        float g = atof(splitline[2].c_str());
+        float b = atof(splitline[3].c_str());
         // Update current properties
+        current_surface->diffuse = new ThreeDVector(r, g, b);
       }
       //specular r g b 
       //  speciﬁes the specular color of the surface.
       else if(!splitline[0].compare("specular")) {
-        // r: atof(splitline[1].c_str())
-        // g: atof(splitline[2].c_str())
-        // b: atof(splitline[3].c_str())
+        float r = atof(splitline[1].c_str());
+        float g = atof(splitline[2].c_str());
+        float b = atof(splitline[3].c_str());
         // Update current properties
+        current_surface->specular = new ThreeDVector(r, g, b);
       }
       //shininess s
       //  speciﬁes the shininess of the surface.
       else if(!splitline[0].compare("shininess")) {
         // shininess: atof(splitline[1].c_str())
         // Update current properties
+        current_surface->power_coefficient = atof(splitline[1].c_str());
       }
       //emission r g b
       //  gives the emissive color of the surface.
@@ -295,7 +312,7 @@ void loadScene(std::string file) {
     }
   
 
-    Scene* scene = new Scene(camera, surfaces, width, height);
+    Scene* scene = new Scene(camera, surfaces, lights, width, height);
 
     //NOTE: this sample will overwrite the file or test.png without warning!
     const char* filename = fname.c_str();
@@ -303,13 +320,20 @@ void loadScene(std::string file) {
     //generate some image
     std::vector<unsigned char> image;
     image.resize(width * height * 4);
+    int new_y;
+    ThreeDVector* color;
+    float r, g, b;
     for (int y = 0; y < height; y++)
       for (int x = 0; x < width; x++) {
-        ThreeDVector* color = scene->get_color(x, y);
-        image[4 * width * y + 4 * x + 0] = color->x;
-        image[4 * width * y + 4 * x + 1] = color->y;
-        image[4 * width * y + 4 * x + 2] = color->z;
-        image[4 * width * y + 4 * x + 3] = 255;
+        new_y = height - 1 - y;
+        color = scene->get_color(x, y);
+        r = min(color->x * 255, float(255));
+        g = min(color->y * 255, float(255.0));
+        b = min(color->z * 255, float(255.0));
+        image[4 * width * new_y + 4 * x + 0] = r;
+        image[4 * width * new_y + 4 * x + 1] = g;
+        image[4 * width * new_y + 4 * x + 2] = b;
+        image[4 * width * new_y + 4 * x + 3] = 255;
         delete color;
       }
 
