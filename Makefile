@@ -8,9 +8,9 @@ main: $(OBJS)
 	$(CC) $(LDFLAGS) -o as2 $(OBJS) $(LDFLAGS) 
 as2.o: as2.cpp lodepng.h camera.h scene.h sphere.h
 	$(CC) $(LDFLAGS) -c as2.cpp -o as2.o
-point_light.o: point_light.h point_light.cpp light.h scene.h three_d_vector.h
+point_light.o: point_light.h point_light.cpp light.h scene.h three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) -c point_light.cpp -o point_light.o
-directional_light.o: directional_light.h directional_light.cpp light.h three_d_vector.h
+directional_light.o: directional_light.h directional_light.cpp light.h three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) -c directional_light.cpp -o directional_light.o
 three_d_vector.o: three_d_vector.h three_d_vector.cpp
 	$(CC) $(LDFLAGS) -c three_d_vector.cpp -o three_d_vector.o

@@ -10,10 +10,16 @@ DirectionalLight::DirectionalLight(float _x, float _y, float _z, float r, float 
 	red = r;
 	green = g;
 	blue = b;
+
+	shadow_t_min = 0.01;
 }
 
-ThreeDVector* DirectionalLight::get_light_direction_from(ThreeDVector* postion) {
-	return direction->scalar_multiply(-1);
+ThreeDVector* DirectionalLight::get_light_direction_from(ThreeDVector* position) {
+	return this->direction->scalar_multiply(-1);
+}
+
+Ray* DirectionalLight::get_shadow_ray(ThreeDVector* position) {
+	return new Ray(position->clone(), this->direction->scalar_multiply(-1), this->shadow_t_min, numeric_limits<float>::infinity());
 }
 
 DirectionalLight::~DirectionalLight(){

@@ -34,11 +34,26 @@ ThreeDVector* RayTracer::trace(Ray* ray) {
 		pixel_color->vector_add_bang(specular_color);
 		delete negative_ray_direction;
 		delete diffuse_color;
+		delete record;
 		return pixel_color;
 	} else {
 		//Return background color
+		delete record;
 		return new ThreeDVector(0, 0, 0);
 	}
+}
+
+bool RayTracer::hits_surface(Ray* ray) {
+	Record* record = new Record();
+	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
+		Surface* surface = *it;
+    	if (surface->hit(ray, record)) {
+    		return true;
+    	} 
+	}
+
+	delete record;
+	return false;
 }
 
  // PRIVATE (FUNCTIONS) SHHHHHHHHHHHHH
@@ -48,9 +63,16 @@ ThreeDVector* RayTracer::trace(Ray* ray) {
  	for (vector<Light*>::iterator i = lights.begin(); i != lights.end(); ++i) {
  		Light* light = *i;
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
- 		ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
- 		diffuse_color->vector_add_bang(diffuse_component);
-        delete diffuse_component;
+
+ 		Ray* shadow_ray = light->get_shadow_ray(point_hit);
+ 		if  (!(this->hits_surface(shadow_ray))) {
+ 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
+ 			diffuse_color->vector_add_bang(diffuse_component);
+        	delete diffuse_component;
+        } 
+        
+        delete light_direction;
+        delete shadow_ray;
     }
     return diffuse_color;
 
@@ -69,9 +91,15 @@ ThreeDVector* RayTracer::calculate_diffuse_helper(Light* l, ThreeDVector* light_
  	for (vector<Light*>::iterator i = lights.begin(); i != lights.end(); ++i) {
  		Light* light = *i;
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
- 		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
- 		specular_color->vector_add_bang(specular_component);
-        delete specular_component;
+
+ 		Ray* shadow_ray = light->get_shadow_ray(point_hit);
+ 		if  (!this->hits_surface(shadow_ray)) {
+	 		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+	 		specular_color->vector_add_bang(specular_component);
+	        delete specular_component;
+    	}
+    	delete light_direction;
+        delete shadow_ray;
     }
     return specular_color;
 
