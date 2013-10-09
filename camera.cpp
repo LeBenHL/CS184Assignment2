@@ -19,7 +19,7 @@ Camera::Camera(float lf_x, float lf_y, float lf_z, float la_x, float la_y, float
 }
 
 Ray* Camera::get_view_ray(ThreeDVector* screen_pos) {
-    ThreeDVector* origin = this->look_from;
+    ThreeDVector* origin = this->look_from->clone();
    
     ThreeDVector* scaled_w = this->w->scalar_multiply(-(this->focal_length));
     ThreeDVector* scaled_u = this->u->scalar_multiply(screen_pos->x);

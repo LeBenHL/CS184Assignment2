@@ -3,14 +3,19 @@
 RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights) {
 	surfaces = _surfaces;
 	lights = _lights;
+
+	reflect_t_min = 2;
 }
 
-ThreeDVector* RayTracer::trace(Ray* ray, int depth) {
+ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 	bool hit = false;
 	Surface* first_hit;
 	Record* record = new Record();
 	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
 		Surface* surface = *it;
+		if ((except_surface != NULL) && (surface == except_surface)) {
+			continue;
+		}
     	if (surface->hit(ray, record)) {
     		hit = true;
     		first_hit = surface;
@@ -24,15 +29,37 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth) {
 		ThreeDVector* pixel_color = new ThreeDVector(0, 0, 0);
 
 		extern ThreeDVector* global_ambient;
-		ThreeDVector* negative_ray_direction = ray->direction->scalar_multiply(-1);
-		negative_ray_direction->normalize_bang();
-		ThreeDVector* surface_color = this->calculate_color(first_hit, this->lights, normal, point_hit, negative_ray_direction); 
+		ThreeDVector* view_direction = ray->direction->scalar_multiply(-1);
+		view_direction->normalize_bang();
+		ThreeDVector* surface_color = this->calculate_color(first_hit, this->lights, normal, point_hit, view_direction); 
 		pixel_color->vector_add_bang(global_ambient);
 		pixel_color->vector_add_bang(surface_color);
 
+		if (depth > 0) {
+			//REFLECTIONS. TODO USE STACK?
+			ThreeDVector* normalized_ray_direction = ray->direction->normalize();
+			float d_dot_n = normalized_ray_direction->dot_product(normal);
+			ThreeDVector* two_d_dot_n_times_n = normal->scalar_multiply(2*d_dot_n);
+			ThreeDVector* reflect_direction = normalized_ray_direction->vector_subtract(two_d_dot_n_times_n);
+			Ray* reflect_ray = new Ray(point_hit->clone(), reflect_direction->clone(), 0, numeric_limits<float>::infinity());
+
+			delete normalized_ray_direction;
+			delete two_d_dot_n_times_n;
+			delete reflect_direction;
+
+			ThreeDVector* ray_color = this->trace(reflect_ray, depth - 1, first_hit);
+			ThreeDVector* reflection_color = first_hit->specular->vector_multiply(ray_color);
+
+			pixel_color->vector_add_bang(reflection_color);
+
+			delete reflect_ray;
+			delete ray_color;
+			delete reflection_color;
+		}
+
 		delete point_hit;
 		delete normal;
-		delete negative_ray_direction;
+		delete view_direction;
 		delete surface_color;
 		delete record;
 		return pixel_color;
@@ -43,10 +70,13 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth) {
 	}
 }
 
-bool RayTracer::hits_surface(Ray* ray) {
+bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
 	Record* record = new Record();
 	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
 		Surface* surface = *it;
+		if ((except_surface != NULL) && (surface == except_surface)) {
+			continue;
+		}
     	if (surface->hit(ray, record)) {
     		return true;
     	} 
@@ -65,7 +95,8 @@ bool RayTracer::hits_surface(Ray* ray) {
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
 
  		Ray* shadow_ray = light->get_shadow_ray(point_hit);
- 		if  (!(this->hits_surface(shadow_ray))) {
+ 		if  (!(this->hits_surface(shadow_ray, surface))) {
+ 		//if (true) {
  			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
 	 		surface_color->vector_add_bang(specular_component);
 	        delete specular_component;

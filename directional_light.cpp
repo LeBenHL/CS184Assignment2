@@ -22,6 +22,10 @@ Ray* DirectionalLight::get_shadow_ray(ThreeDVector* position) {
 	return new Ray(position->clone(), this->direction->scalar_multiply(-1), this->shadow_t_min, numeric_limits<float>::infinity());
 }
 
+vector<ThreeDVector*> DirectionalLight::get_light_samples(ThreeDVector* position) {
+
+}
+
 DirectionalLight::~DirectionalLight(){
 	delete direction;
 }

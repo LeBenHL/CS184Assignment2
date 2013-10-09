@@ -8,6 +8,7 @@ class DirectionalLight: public Light {
   	ThreeDVector* direction;
   	ThreeDVector* get_light_direction_from(ThreeDVector* postion);
   	Ray* get_shadow_ray(ThreeDVector* postion);
+  	vector<ThreeDVector*> get_light_samples(ThreeDVector* position);
   	DirectionalLight(float, float, float, float, float, float);
   	~DirectionalLight();
 };

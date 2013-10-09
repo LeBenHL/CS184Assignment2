@@ -22,6 +22,10 @@ Ray* PointLight::get_shadow_ray(ThreeDVector* position) {
 	return new Ray(position->clone(), direction, this->shadow_t_min, mag);
 }
 
+vector<ThreeDVector*> PointLight::get_light_samples(ThreeDVector* position) {
+
+}
+
 PointLight::~PointLight(){
 	delete position;
 }

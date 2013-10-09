@@ -36,7 +36,7 @@ void loadScene(std::string file) {
   //LIGHTS CAMERA AND ACTION BUT NOT CAMERA (see above)
   vector<Light*> lights;
   //MAX DEPTH
-  int depth = 1;
+  int depth = 5;
 
   //THE CURRENT SURFACE
   Surface* current_surface;

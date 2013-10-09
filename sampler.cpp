@@ -9,7 +9,7 @@ Sampler::Sampler(int i_w, int i_h, float fov, float focal_length) {
 	extern float PI;
 
 	float plane_height = tan((fov/2) * PI/180) * 2 * focal_length;
-	float plane_width = plane_height * (image_width / image_height);
+	float plane_width = plane_height * (float(image_width) / image_height);
 
 
 	LL = new ThreeDVector(-plane_width/2, -plane_height/2, 0);
