@@ -3,8 +3,6 @@
 RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights) {
 	surfaces = _surfaces;
 	lights = _lights;
-
-	reflect_t_min = 2;
 }
 
 ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
@@ -86,6 +84,16 @@ bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
 	return false;
 }
 
+int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
+	int count = 0;
+	for (vector<Ray*>::iterator i = rays.begin(); i != rays.end(); ++i) {
+		if (!this->hits_surface(*i, except_surface)) {
+			count++;
+		}
+	}
+	return count;
+}
+
  // PRIVATE (FUNCTIONS) SHHHHHHHHHHHHH
 
  ThreeDVector* RayTracer::calculate_color(Surface* surface, vector<Light*> lights, ThreeDVector* normal, ThreeDVector* point_hit, ThreeDVector* view_direction) {
@@ -94,20 +102,26 @@ bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
  		Light* light = *i;
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
 
- 		Ray* shadow_ray = light->get_shadow_ray(point_hit);
- 		if  (!(this->hits_surface(shadow_ray, surface))) {
+ 		int number_samples = 32;
+ 		vector<Ray*> shadow_rays = light->get_shadow_rays(point_hit, number_samples);
+ 		int num_hits_light = this->num_hits_light(shadow_rays, surface);
+ 		if  (num_hits_light > 0) {
  		//if (true) {
+ 			float multiplier = float(num_hits_light) / number_samples;
+
  			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+ 			specular_component->scalar_multiply_bang(multiplier);
 	 		surface_color->vector_add_bang(specular_component);
 	        delete specular_component;
 
  			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
+ 			diffuse_component->scalar_multiply_bang(multiplier);
  			surface_color->vector_add_bang(diffuse_component);
         	delete diffuse_component;
         } 
         
         delete light_direction;
-        delete shadow_ray;
+       	shadow_rays.clear();
     }
     return surface_color;
 

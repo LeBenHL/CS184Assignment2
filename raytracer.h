@@ -16,8 +16,8 @@ class RayTracer{
 		vector<Surface*> surfaces;
 		vector<Light*> lights;
 		ThreeDVector* trace(Ray* ray, int recursive_depth, Surface* except_surface);
-		float reflect_t_min;
 		bool hits_surface(Ray* ray, Surface* except_surface);
+		int num_hits_light(vector<Ray*> rays, Surface* surface);
 		RayTracer(vector<Surface*> surfaces, vector<Light*> lights);
 		~RayTracer();
 	private:

@@ -1,4 +1,4 @@
-size 400 800
+size 800 800
 output lichen.png
 #camera -12 0 8 2 0 -1 0 1 0 45
 camera 0 0 6.5 0 0 -1 0 1 0 60
@@ -28,8 +28,8 @@ diffuse 0 .5 .5
 specular .8 .8 .8
 shininess 50
 
-directional 1 0 0 .8 .8 .8
-directional -1 0 0 .8 .8 .8
+#directional 1 0 0 .8 .8 .8
+#directional -1 0 0 .8 .8 .8
 #directional 3 -3 -1 .8 .8 .8
 #directional -3 -3 -1 .8 .8 .8
 #directional 3 3 -1 .8 .8 .8
@@ -44,5 +44,7 @@ directional -1 0 0 .8 .8 .8
 #point 3 -3 -1 .8 .8 .8
 #point -6 0 -1 .8 .8 .8
 #directional 0 0 -1 .8 .8 .8
+
+point -3 -3 -1 .8 .8 .8
 
 maxdepth 5

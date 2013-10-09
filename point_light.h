@@ -6,10 +6,11 @@
 class PointLight: public Light {
   public:
   	ThreeDVector* position;
+  	float radius;
   	PointLight(float, float, float, float, float, float);
   	~PointLight();
   	ThreeDVector* get_light_direction_from(ThreeDVector* postion);
-  	vector<ThreeDVector*> get_light_samples(ThreeDVector* position);
+  	vector<Ray*> get_shadow_rays(ThreeDVector* position, int sample_size);
   	Ray* get_shadow_ray(ThreeDVector* postion);
 };
 
