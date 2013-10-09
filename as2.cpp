@@ -12,6 +12,7 @@
 using namespace std;
 
 ThreeDVector* global_ambient = new ThreeDVector(0, 0, 0);
+float PI = 3.14159265359;
 
 void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
@@ -34,6 +35,8 @@ void loadScene(std::string file) {
   vector<Surface*> surfaces;
   //LIGHTS CAMERA AND ACTION BUT NOT CAMERA (see above)
   vector<Light*> lights;
+  //MAX DEPTH
+  int depth = 1;
 
   //THE CURRENT SURFACE
   Surface* current_surface;
@@ -76,7 +79,7 @@ void loadScene(std::string file) {
       //maxdepth depth
       //  max # of bounces for ray (default 5)
       else if(!splitline[0].compare("maxdepth")) {
-        // maxdepth: atoi(splitline[1].c_str())
+        depth = atoi(splitline[1].c_str());
       }
       //output filename
       //  output file to write image to 
@@ -312,7 +315,7 @@ void loadScene(std::string file) {
     }
   
 
-    Scene* scene = new Scene(camera, surfaces, lights, width, height);
+    Scene* scene = new Scene(camera, surfaces, lights, width, height, depth);
 
     //NOTE: this sample will overwrite the file or test.png without warning!
     const char* filename = fname.c_str();

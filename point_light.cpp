@@ -16,7 +16,10 @@ ThreeDVector* PointLight::get_light_direction_from(ThreeDVector* position) {
 }
 
 Ray* PointLight::get_shadow_ray(ThreeDVector* position) {
-	return new Ray(position->clone(), this->position->vector_subtract(position), this->shadow_t_min, 1);
+	ThreeDVector* direction = this->position->vector_subtract(position);
+	float mag = direction->magnitude();
+	direction->normalize_bang();
+	return new Ray(position->clone(), direction, this->shadow_t_min, mag);
 }
 
 PointLight::~PointLight(){

@@ -5,7 +5,7 @@ RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights) {
 	lights = _lights;
 }
 
-ThreeDVector* RayTracer::trace(Ray* ray) {
+ThreeDVector* RayTracer::trace(Ray* ray, int depth) {
 	bool hit = false;
 	Surface* first_hit;
 	Record* record = new Record();
@@ -21,19 +21,19 @@ ThreeDVector* RayTracer::trace(Ray* ray) {
 	if (hit) {
 		ThreeDVector* point_hit = ray->point_at(record->t_hit);
 		ThreeDVector* normal = first_hit->get_normal(point_hit);
-
 		ThreeDVector* pixel_color = new ThreeDVector(0, 0, 0);
 
 		extern ThreeDVector* global_ambient;
-		ThreeDVector* diffuse_color = this->calculate_diffuse(first_hit, this->lights, normal, point_hit);
 		ThreeDVector* negative_ray_direction = ray->direction->scalar_multiply(-1);
 		negative_ray_direction->normalize_bang();
-		ThreeDVector* specular_color = this->calculate_specular(first_hit, this->lights, normal, point_hit, negative_ray_direction); 
+		ThreeDVector* surface_color = this->calculate_color(first_hit, this->lights, normal, point_hit, negative_ray_direction); 
 		pixel_color->vector_add_bang(global_ambient);
-		pixel_color->vector_add_bang(diffuse_color);
-		pixel_color->vector_add_bang(specular_color);
+		pixel_color->vector_add_bang(surface_color);
+
+		delete point_hit;
+		delete normal;
 		delete negative_ray_direction;
-		delete diffuse_color;
+		delete surface_color;
 		delete record;
 		return pixel_color;
 	} else {
@@ -58,23 +58,27 @@ bool RayTracer::hits_surface(Ray* ray) {
 
  // PRIVATE (FUNCTIONS) SHHHHHHHHHHHHH
 
- ThreeDVector* RayTracer::calculate_diffuse(Surface* surface, vector<Light*> lights, ThreeDVector* normal, ThreeDVector* point_hit) {
- 	ThreeDVector* diffuse_color = new ThreeDVector(0, 0, 0);
+ ThreeDVector* RayTracer::calculate_color(Surface* surface, vector<Light*> lights, ThreeDVector* normal, ThreeDVector* point_hit, ThreeDVector* view_direction) {
+ 	ThreeDVector* surface_color = new ThreeDVector(0, 0, 0);
  	for (vector<Light*>::iterator i = lights.begin(); i != lights.end(); ++i) {
  		Light* light = *i;
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
 
  		Ray* shadow_ray = light->get_shadow_ray(point_hit);
  		if  (!(this->hits_surface(shadow_ray))) {
+ 			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+	 		surface_color->vector_add_bang(specular_component);
+	        delete specular_component;
+
  			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
- 			diffuse_color->vector_add_bang(diffuse_component);
+ 			surface_color->vector_add_bang(diffuse_component);
         	delete diffuse_component;
         } 
         
         delete light_direction;
         delete shadow_ray;
     }
-    return diffuse_color;
+    return surface_color;
 
 }
 
@@ -83,26 +87,6 @@ ThreeDVector* RayTracer::calculate_diffuse_helper(Light* l, ThreeDVector* light_
   ThreeDVector light = ThreeDVector(l->red, l->green, l->blue);
   light.scalar_multiply_bang(max(dot_product, float(0)));
   return diffuse->vector_multiply(&light);
-}
-
-
- ThreeDVector* RayTracer::calculate_specular(Surface* surface, vector<Light*> lights, ThreeDVector* normal, ThreeDVector* point_hit, ThreeDVector* view_direction) {
- 	ThreeDVector* specular_color = new ThreeDVector(0, 0, 0);
- 	for (vector<Light*>::iterator i = lights.begin(); i != lights.end(); ++i) {
- 		Light* light = *i;
- 		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
-
- 		Ray* shadow_ray = light->get_shadow_ray(point_hit);
- 		if  (!this->hits_surface(shadow_ray)) {
-	 		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
-	 		specular_color->vector_add_bang(specular_component);
-	        delete specular_component;
-    	}
-    	delete light_direction;
-        delete shadow_ray;
-    }
-    return specular_color;
-
 }
 
 ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* specular, ThreeDVector* normal, ThreeDVector* view_direction, float power_coefficient) {
