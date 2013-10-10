@@ -36,4 +36,5 @@ ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {
 Scene::~Scene(){
 	delete camera;
 	delete sampler;
+	delete tracer;
 }
