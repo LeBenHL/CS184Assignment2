@@ -1,4 +1,4 @@
-#include "triange.h"
+#include "triangle.h"
 
 Triangle::Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c){
 	a = _a;
@@ -32,13 +32,13 @@ bool Triangle::hit(Ray* ray, Record* record){
 	float b2 = this->a->y - ray->position->y;
 	float b3 = this->a->z - ray->position->z;
 
-	b << 3, 3, 4;
+	b << b1, b2, b3;
 
 	Vector3f x = A.colPivHouseholderQr().solve(b);
 
-	float beta = x[1];
-	float gamma = x[2];
-	float t = x[3];
+	float beta = x[0];
+	float gamma = x[1];
+	float t = x[2];
 
 	if (t < ray->t_min || t > ray->t_max) {
 		return false;
@@ -51,6 +51,10 @@ bool Triangle::hit(Ray* ray, Record* record){
 	}
 	record->t_hit = t;
 	return true;
+}
+
+ThreeDVector* Triangle::get_normal(ThreeDVector* surface_point) {
+	return normal->clone();
 }
 
 Triangle::~Triangle(){

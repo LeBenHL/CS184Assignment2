@@ -26,11 +26,11 @@ bool Sphere::hit(Ray* ray, Record* record) {
 	float t_hit_neg =  (neg_d_dot_e_minus_c - sqrt_discriminant) / d_dot_d; 
 	
 	vector<float> t_hits;
-	if (t_hit_pos < ray->t_max && t_hit_pos > ray->t_min) {
+	if (t_hit_pos <= ray->t_max && t_hit_pos >= ray->t_min) {
 		t_hits.push_back(t_hit_pos);
 	}
 
-	if (t_hit_neg < ray->t_max && t_hit_neg > ray->t_min) {
+	if (t_hit_neg <= ray->t_max && t_hit_neg >= ray->t_min) {
 		t_hits.push_back(t_hit_neg);
 	}
 

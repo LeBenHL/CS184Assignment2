@@ -46,7 +46,7 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 			delete reflect_direction;
 
 			ThreeDVector* ray_color = this->trace(reflect_ray, depth - 1, first_hit);
-			ThreeDVector* reflection_color = first_hit->specular->vector_multiply(ray_color);
+			ThreeDVector* reflection_color = first_hit->emission->vector_multiply(ray_color);
 
 			pixel_color->vector_add_bang(reflection_color);
 
@@ -147,4 +147,8 @@ ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light
 	ThreeDVector light = ThreeDVector(l->red, l->green, l->blue);
 	light.scalar_multiply_bang(pow(max(r_dot_v, float(0)), power_coefficient));
 	return specular->vector_multiply(&light);
+}
+
+RayTracer::~RayTracer() {
+	
 }

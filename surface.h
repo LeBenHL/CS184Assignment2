@@ -8,6 +8,7 @@ class Surface {
 	public:
 		ThreeDVector* diffuse;
 		ThreeDVector* specular;
+		ThreeDVector* emission;
 		float power_coefficient;
 
 		virtual bool hit(Ray* ray, Record* record) = 0;

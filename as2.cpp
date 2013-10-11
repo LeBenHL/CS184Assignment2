@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "directional_light.h"
 #include "point_light.h"
 
@@ -37,9 +38,16 @@ void loadScene(std::string file) {
   vector<Light*> lights;
   //MAX DEPTH
   int depth = 5;
-
-  //THE CURRENT SURFACE
-  Surface* current_surface;
+  //DIFFUSE
+  ThreeDVector* diffuse = new ThreeDVector(0, 0, 0);
+  //SPECULAR
+  ThreeDVector* specular = new ThreeDVector(0, 0, 0);
+  //SHININESS
+  float shininess = 1;
+  //EMISSION
+  ThreeDVector* emission = new ThreeDVector(0, 0, 0);
+  //VERTICES
+  vector<ThreeDVector*> vertices;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -122,7 +130,10 @@ void loadScene(std::string file) {
         float radius = atof(splitline[4].c_str());
         ThreeDVector* center = new ThreeDVector(x, y, z);
         Sphere* sphere = new Sphere(center, radius);
-        current_surface = sphere;
+        sphere->diffuse = diffuse->clone();
+        sphere->specular = specular->clone();
+        sphere->power_coefficient = shininess;
+        sphere->emission = emission;
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -143,10 +154,12 @@ void loadScene(std::string file) {
       //  Deﬁnes a vertex at the given location.
       //  The vertex is put into a pile, starting to be numbered at 0.
       else if(!splitline[0].compare("vertex")) {
-        // x: atof(splitline[1].c_str()),
-        // y: atof(splitline[2].c_str()),
-        // z: atof(splitline[3].c_str()));
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
         // Create a new vertex with these 3 values, store in some array
+        ThreeDVector* vertex = new ThreeDVector(x, y, z);
+        vertices.push_back(vertex);
       }
       //vertexnormal x y z nx ny nz
       //  Similar to the above, but deﬁne a surface normal with each vertex.
@@ -166,14 +179,27 @@ void loadScene(std::string file) {
       //  the vertex command). The vertices are assumed to be speciﬁed in counter-clockwise order. Your code
       //  should internally compute a face normal for this triangle.
       else if(!splitline[0].compare("tri")) {
-        // v1: atof(splitline[1].c_str())
-        // v2: atof(splitline[2].c_str())
-        // v3: atof(splitline[3].c_str())
+        if (vertices.size() < 3) {
+          cerr << "Tried to create triangle with less than 3 vertices defined" << endl;
+          exit(1);
+        }
         // Create new triangle:
         //   Store pointer to array of vertices
         //   Store 3 integers to index into array
         //   Store current property values
         //   Store current top of matrix stack
+        ThreeDVector* a = vertices.back();
+        vertices.pop_back();
+        ThreeDVector* b = vertices.back();
+        vertices.pop_back();
+        ThreeDVector* c = vertices.back();
+        vertices.pop_back();
+        Triangle* triangle = new Triangle(a, b, c);
+        triangle->diffuse = diffuse->clone();
+        triangle->specular = specular->clone();
+        triangle->power_coefficient = shininess;
+        triangle->emission = emission;
+        surfaces.push_back(triangle);
       }
       //trinormal v1 v2 v3
       //  Same as above but for vertices speciﬁed with normals.
@@ -283,8 +309,8 @@ void loadScene(std::string file) {
         float r = atof(splitline[1].c_str());
         float g = atof(splitline[2].c_str());
         float b = atof(splitline[3].c_str());
-        // Update current properties
-        current_surface->diffuse = new ThreeDVector(r, g, b);
+        delete diffuse;
+        diffuse = new ThreeDVector(r, g, b);
       }
       //specular r g b 
       //  speciﬁes the specular color of the surface.
@@ -292,23 +318,23 @@ void loadScene(std::string file) {
         float r = atof(splitline[1].c_str());
         float g = atof(splitline[2].c_str());
         float b = atof(splitline[3].c_str());
-        // Update current properties
-        current_surface->specular = new ThreeDVector(r, g, b);
+        delete specular;
+        specular = new ThreeDVector(r, g, b);
       }
       //shininess s
       //  speciﬁes the shininess of the surface.
       else if(!splitline[0].compare("shininess")) {
         // shininess: atof(splitline[1].c_str())
-        // Update current properties
-        current_surface->power_coefficient = atof(splitline[1].c_str());
+        shininess = atof(splitline[1].c_str());
       }
       //emission r g b
       //  gives the emissive color of the surface.
       else if(!splitline[0].compare("emission")) {
-        // r: atof(splitline[1].c_str())
-        // g: atof(splitline[2].c_str())
-        // b: atof(splitline[3].c_str())
-        // Update current properties
+        float r = atof(splitline[1].c_str());
+        float g = atof(splitline[2].c_str());
+        float b = atof(splitline[3].c_str());
+        delete emission;
+        emission = new ThreeDVector(r, g, b);
       } else {
         std::cerr << "Unknown command: " << splitline[0] << std::endl;
       }
