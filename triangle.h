@@ -2,10 +2,7 @@
 #define TRIANGLE_H
 
 #include "surface.h"
-#include "three_d_vector.h";
-#include <iostream>
-#include <Eigen/Dense>
-using namespace Eigen;
+#include "three_d_vector.h"
 
 class Triangle: public Surface{
 	public:

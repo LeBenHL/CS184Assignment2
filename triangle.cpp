@@ -13,7 +13,24 @@ Triangle::Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c){
 }
 
 bool Triangle::hit(Ray* ray, Record* record){
-	Matrix3f A;
+
+	//matrix A
+	float a = this->a->x - this->b->x;
+	float b = this->a->y - this->b->y;
+	float c = this->a->z - this->b->z;
+	float d = this->a->x - this->c->x;
+	float e = this->a->y - this->c->y;
+	float f = this->a->z - this->c->z;
+	float g = ray->direction->x;
+	float h = ray->direction->y;
+	float i = ray->direction->z;
+
+	//vector b
+	float j = this->a->x - ray->position->x;
+	float k = this->a->y - ray->position->y;
+	float l = this->a->z - ray->position->z;
+	
+	/*Matrix3f A;
 	Vector3f b;
 
 	float a1 = this->a->x - this->b->x;
@@ -34,18 +51,34 @@ bool Triangle::hit(Ray* ray, Record* record){
 
 	b << b1, b2, b3;
 
-	Vector3f x = A.colPivHouseholderQr().solve(b);
+	Vector3f x = A.colPivHouseholderQr().solve(b);*/
 
-	float beta = x[0];
-	float gamma = x[1];
-	float t = x[2];
+	float ei_minus_hf = e*i-h*f;
+	float gf_minus_di = g*f-d*i;
+	float dh_minus_eg = d*h-e*g;
+	float ak_minus_jb = a*k-j*b;
+	float jc_minus_al = j*c-a*l;
+	float bl_minus_kc = b*l-k*c;
+
+	float m = a*ei_minus_hf + b*gf_minus_di + c*dh_minus_eg;
+
+	float t = f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc;
+	t /= -m;
 
 	if (t < ray->t_min || t > ray->t_max) {
 		return false;
 	}
+
+	float gamma = i*ak_minus_jb + h*jc_minus_al + g*bl_minus_kc;
+	gamma /= m;
+
 	if(gamma < 0 || gamma > 1){
 		return false;
 	}
+
+	float beta = j*ei_minus_hf + k*gf_minus_di + l*dh_minus_eg;
+	beta /= m;
+
 	if(beta < 0 || beta > (1-gamma)){
 		return false;
 	}
