@@ -3,7 +3,7 @@
 Triangle::Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c){
 	a = _a;
 	b = _b;
-	b = _c;
+	c = _c;
 	ThreeDVector* b_minus_a = _b->vector_subtract(_a);
 	ThreeDVector* c_minus_a = _c->vector_subtract(_a);
 	normal = b_minus_a->cross_product(c_minus_a);
@@ -61,4 +61,5 @@ Triangle::~Triangle(){
 	delete a;
 	delete b;
 	delete c;
+	delete normal;
 }

@@ -48,6 +48,8 @@ void loadScene(std::string file) {
   ThreeDVector* emission = new ThreeDVector(0, 0, 0);
   //VERTICES
   vector<ThreeDVector*> vertices;
+  //Normal Vertices
+  vector<ThreeDVector*> normal_vertices;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -166,35 +168,43 @@ void loadScene(std::string file) {
       //  The vertex and vertexnormal set of vertices are completely independent
       //  (as are maxverts and maxvertnorms).
       else if(!splitline[0].compare("vertexnormal")) {
-        // x: atof(splitline[1].c_str()),
-        // y: atof(splitline[2].c_str()),
-        // z: atof(splitline[3].c_str()));
-        // nx: atof(splitline[4].c_str()),
-        // ny: atof(splitline[5].c_str()),
-        // nz: atof(splitline[6].c_str()));
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        float nx = atof(splitline[4].c_str());
+        float ny = atof(splitline[5].c_str());
+        float nz = atof(splitline[6].c_str());
         // Create a new vertex+normal with these 6 values, store in some array
+        ThreeDVector* vertex = new ThreeDVector(x, y, z);
+        normal_vertices.push_back(vertex);
       }
       //tri v1 v2 v3
       //  Create a triangle out of the vertices involved (which have previously been speciﬁed with
       //  the vertex command). The vertices are assumed to be speciﬁed in counter-clockwise order. Your code
       //  should internally compute a face normal for this triangle.
       else if(!splitline[0].compare("tri")) {
-        if (vertices.size() < 3) {
-          cerr << "Tried to create triangle with less than 3 vertices defined" << endl;
-          exit(1);
-        }
         // Create new triangle:
         //   Store pointer to array of vertices
         //   Store 3 integers to index into array
         //   Store current property values
         //   Store current top of matrix stack
-        ThreeDVector* a = vertices.back();
-        vertices.pop_back();
-        ThreeDVector* b = vertices.back();
-        vertices.pop_back();
-        ThreeDVector* c = vertices.back();
-        vertices.pop_back();
-        Triangle* triangle = new Triangle(a, b, c);
+        int v1 = atoi(splitline[1].c_str());
+        int v2 = atoi(splitline[2].c_str());
+        int v3 = atoi(splitline[3].c_str());
+        int max_v1_v2 = max(v1, v2);
+        int max_v1_v2_v3 = max(max_v1_v2, v3);
+        if (vertices.size() < max_v1_v2_v3 + 1) {
+          cerr << "Tried to access vertex that was not defined yet" << endl;
+          exit(1);
+        }
+
+        ThreeDVector* a = vertices[v1];
+        ThreeDVector* b = vertices[v2];
+        ThreeDVector* c = vertices[v3];
+        cout << a->repr() << endl;
+        cout << b->repr() << endl;
+        cout << c->repr() << endl;
+        Triangle* triangle = new Triangle(a->clone(), b->clone(), c->clone());
         triangle->diffuse = diffuse->clone();
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
@@ -215,6 +225,25 @@ void loadScene(std::string file) {
         //   Store 3 integers to index into array
         //   Store current property values
         //   Store current top of matrix stack
+        int v1 = atoi(splitline[1].c_str());
+        int v2 = atoi(splitline[2].c_str());
+        int v3 = atoi(splitline[3].c_str());
+        int max_v1_v2 = max(v1, v2);
+        int max_v1_v2_v3 = max(max_v1_v2, v3);
+        if (normal_vertices.size() < max_v1_v2_v3 + 1) {
+          cerr << "Tried to access vertex that was not defined yet" << endl;
+          exit(1);
+        }
+
+        ThreeDVector* a = normal_vertices[v1];
+        ThreeDVector* b = normal_vertices[v2];
+        ThreeDVector* c = normal_vertices[v3];
+        Triangle* triangle = new Triangle(a->clone(), b->clone(), c->clone());
+        triangle->diffuse = diffuse->clone();
+        triangle->specular = specular->clone();
+        triangle->power_coefficient = shininess;
+        triangle->emission = emission;
+        surfaces.push_back(triangle);
       }
 
       //translate x y z

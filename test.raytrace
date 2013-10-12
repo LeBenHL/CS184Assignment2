@@ -1,9 +1,9 @@
 size 800 800
-output lichen2.png
+output lichen.png
 #camera -12 0 8 2 0 -1 0 1 0 45
-camera 0 0 6.5 0 0 -1 0 1 0 60
+camera 0 0 10 0 0 -1 0 1 0 60
 
-emission .8 .8 .8
+emission .2 .2 .2
 
 diffuse 0 .5 0
 specular .8 .8 .8
@@ -52,5 +52,7 @@ vertex 3.5 4 0
 #directional 0 0 -1 .8 .8 .8
 
 point -3 -3 -1 .8 .8 .8
+point 3 3 -1 .4 .4 .4
+point 3 3 0 .4 .4 .4
 
 maxdepth 5
