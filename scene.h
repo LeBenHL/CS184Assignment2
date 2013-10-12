@@ -20,8 +20,9 @@ class Scene{
 		Sampler* sampler;
 		RayTracer* tracer;
 		int recursive_depth;
+		int grid_size;
 
-		Scene(Camera*, std::vector<Surface*>, std::vector<Light*>, int, int, int recursive_depth);
+		Scene(Camera*, std::vector<Surface*>, std::vector<Light*>, int, int, int recursive_depth, int grid_size);
 		~Scene();
 		ThreeDVector* get_color(int, int);
 		ThreeDVector* get_color_helper(int, int, int);

@@ -1,10 +1,11 @@
 #include "scene.h"
 
-Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth) {
+Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth, int _grid_size) {
 	camera = _camera;
 	surfaces = _surfaces;
 	lights = _lights;
 	recursive_depth = _recursive_depth;
+	grid_size = _grid_size;
 
 	float focal_length = 1;
 
@@ -15,7 +16,7 @@ Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light
 
 ThreeDVector* Scene::get_color(int x,int y) {
 
-	return this->get_color_helper(x, y, 1);
+	return this->get_color_helper(x, y, this->grid_size);
 }
 
 ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {

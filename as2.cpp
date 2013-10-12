@@ -24,6 +24,78 @@ void createPng(const char* filename, std::vector<unsigned char>& image, unsigned
   if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
+void parseObj(const char* filename, vector<Surface*>* surfaces, ThreeDVector* diffuse, ThreeDVector* specular, float shininess, ThreeDVector* emission) {
+  vector<ThreeDVector*> vertices;
+
+  std::ifstream inpfile(filename);
+  if(!inpfile.is_open()) {
+    std::cout << "Unable to open file" << std::endl;
+  } else {
+    std::string line;
+    //MatrixStack mst;
+    
+    while(inpfile.good()) {
+      std::vector<std::string> splitline;
+      std::string buf;
+
+      std::getline(inpfile,line);
+      std::stringstream ss(line);
+
+      while (ss >> buf) {
+        splitline.push_back(buf);
+      }
+      //Ignore blank lines
+      if(splitline.size() == 0) {
+        continue;
+      }
+      //Valid commands:
+      //v x y z [w]
+      else if(!splitline[0].compare("v")) {
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        ThreeDVector* vertex = new ThreeDVector(x, y, z);
+        vertices.push_back(vertex);
+      }
+      //f v1 v2 v3 v4 ....
+      //We assume they are all triangles defined with 3 vertices
+      //Most files seem to be like this
+      //1 indexed vertices so we need to add 1
+      else if(!splitline[0].compare("f")) {
+        const char* v1 = splitline[1].c_str();
+        const char* v2 = splitline[2].c_str();
+        const char* v3 = splitline[3].c_str();
+        char v1_str[500];
+        char v2_str[500];
+        char v3_str[500];
+        strncpy(v1_str, v1, sizeof(v1_str));
+        strncpy(v2_str, v2, sizeof(v2_str));
+        strncpy(v3_str, v3, sizeof(v3_str));
+        int v1_index = atoi(strtok(v1_str, "\\")) - 1;
+        int v2_index = atoi(strtok(v2_str, "\\")) - 1;
+        int v3_index = atoi(strtok(v3_str, "\\")) - 1;
+        int max_v1_v2 = max(v1_index, v2_index);
+        int max_v1_v2_v3 = max(max_v1_v2, v3_index);
+        if (vertices.size() < max_v1_v2_v3 + 1) {
+          cerr << "Tried to access vertex that was not defined yet" << endl;
+          exit(1);
+        }
+        ThreeDVector* v1_vector = vertices[v1_index];
+        ThreeDVector* v2_vector = vertices[v2_index];
+        ThreeDVector* v3_vector = vertices[v3_index];
+        Triangle* triangle = new Triangle(v1_vector->clone(), v2_vector->clone(), v3_vector->clone());
+        triangle->diffuse = diffuse->clone();
+        triangle->specular = specular->clone();
+        triangle->power_coefficient = shininess;
+        triangle->emission = emission->clone();
+        surfaces->push_back(triangle);
+      }
+    }
+  }
+
+  vertices.clear();
+}
+
 void loadScene(std::string file) {
 
   //store variables and set stuff at the end
@@ -50,6 +122,8 @@ void loadScene(std::string file) {
   vector<ThreeDVector*> vertices;
   //Normal Vertices
   vector<ThreeDVector*> normal_vertices;
+  //GRID SIZE (FOR Anti Aliasing)
+  int grid_size = 1;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -135,7 +209,7 @@ void loadScene(std::string file) {
         sphere->diffuse = diffuse->clone();
         sphere->specular = specular->clone();
         sphere->power_coefficient = shininess;
-        sphere->emission = emission;
+        sphere->emission = emission->clone();
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -205,7 +279,7 @@ void loadScene(std::string file) {
         triangle->diffuse = diffuse->clone();
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
-        triangle->emission = emission;
+        triangle->emission = emission->clone();
         surfaces.push_back(triangle);
       }
       //trinormal v1 v2 v3
@@ -239,7 +313,7 @@ void loadScene(std::string file) {
         triangle->diffuse = diffuse->clone();
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
-        triangle->emission = emission;
+        triangle->emission = emission->clone();
         surfaces.push_back(triangle);
       }
 
@@ -361,13 +435,23 @@ void loadScene(std::string file) {
         float b = atof(splitline[3].c_str());
         delete emission;
         emission = new ThreeDVector(r, g, b);
-      } else {
+      }
+      //obj filename 
+      else if(!splitline[0].compare("obj")) {
+        const char* file_name = splitline[1].c_str();
+        parseObj(file_name, &surfaces, diffuse, specular, shininess, emission);
+      } 
+      //aa grid_size 
+      else if(!splitline[0].compare("aa")) {
+        grid_size = atoi(splitline[1].c_str());
+      } 
+      else {
         std::cerr << "Unknown command: " << splitline[0] << std::endl;
       }
     }
   
 
-    Scene* scene = new Scene(camera, surfaces, lights, width, height, depth);
+    Scene* scene = new Scene(camera, surfaces, lights, width, height, depth, grid_size);
 
     //NOTE: this sample will overwrite the file or test.png without warning!
     const char* filename = fname.c_str();
