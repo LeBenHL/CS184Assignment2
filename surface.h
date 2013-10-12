@@ -12,7 +12,7 @@ class Surface {
 		float power_coefficient;
 
 		virtual bool hit(Ray* ray, Record* record) = 0;
-		virtual ThreeDVector* get_normal(ThreeDVector* surface_point) = 0;
+		virtual ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) = 0;
 };
 
 #endif

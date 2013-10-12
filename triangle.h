@@ -13,7 +13,7 @@ class Triangle: public Surface{
 		ThreeDVector* normal;
 
 		Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c);
-		ThreeDVector* get_normal(ThreeDVector* surface_point);
+		ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector);
 		bool hit(Ray* ray, Record* record);
 
 		~Triangle();

@@ -65,8 +65,17 @@ bool Triangle::hit(Ray* ray, Record* record){
 	return true;
 }
 
-ThreeDVector* Triangle::get_normal(ThreeDVector* surface_point) {
-	return normal->clone();
+ThreeDVector* Triangle::get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) {
+	ThreeDVector* negative_normal = this->normal->scalar_multiply(-1);
+	float negative_normal_dot_product = negative_normal->dot_product(view_vector);
+	float normal_dot_product = this->normal->dot_product(view_vector);
+
+	if (normal_dot_product > negative_normal_dot_product) {
+		return negative_normal;
+	} else {
+		delete negative_normal;
+		return this->normal->clone();
+	}
 }
 
 Triangle::~Triangle(){

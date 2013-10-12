@@ -33,6 +33,10 @@ sphere 0 3 -1 1
 vertex 3 3 -1
 vertex 4 3 -1
 vertex 3.5 4 0
+vertex -1 -1 0
+vertex 1 -1 0
+vertex 0 2 0
+tri 2 1 0
 
 #directional 1 0 0 .8 .8 .8
 #directional -1 0 0 .8 .8 .8
@@ -51,8 +55,7 @@ vertex 3.5 4 0
 #point -6 0 -1 .8 .8 .8
 #directional 0 0 -1 .8 .8 .8
 
-point -3 -3 -1 .8 .8 .8
-point 3 3 -1 .4 .4 .4
-point 3 3 0 .4 .4 .4
+point -3 -3 0 .8 .8 .8
+point 3 3 0 .8 .8 .8
 
 maxdepth 5

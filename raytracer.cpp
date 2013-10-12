@@ -23,7 +23,7 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 
 	if (hit) {
 		ThreeDVector* point_hit = ray->point_at(record->t_hit);
-		ThreeDVector* normal = first_hit->get_normal(point_hit);
+		ThreeDVector* normal = first_hit->get_normal(point_hit, ray->direction);
 		ThreeDVector* pixel_color = new ThreeDVector(0, 0, 0);
 
 		extern ThreeDVector* global_ambient;

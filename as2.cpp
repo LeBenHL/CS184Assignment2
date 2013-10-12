@@ -201,9 +201,6 @@ void loadScene(std::string file) {
         ThreeDVector* a = vertices[v1];
         ThreeDVector* b = vertices[v2];
         ThreeDVector* c = vertices[v3];
-        cout << a->repr() << endl;
-        cout << b->repr() << endl;
-        cout << c->repr() << endl;
         Triangle* triangle = new Triangle(a->clone(), b->clone(), c->clone());
         triangle->diffuse = diffuse->clone();
         triangle->specular = specular->clone();
