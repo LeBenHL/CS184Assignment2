@@ -1,11 +1,11 @@
 size 800 800
-output teapot1.png
+output teddy.png
 
-camera 0 0 10 0 0 -1 0 1 0 60
+camera 0 0 60 0 0 -1 0 1 0 60
 
 diffuse 0 0 .5
 specular .8 .8 .8
 shininess 50
-obj teapot.obj
+obj teddy.obj
 
 directional 0 0 -1 .5 .5 .5

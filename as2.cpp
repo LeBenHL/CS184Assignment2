@@ -1,7 +1,9 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <stack>
 #include <iostream>
+#include <Eigen/Dense>
 #include "lodepng.h"
 #include "camera.h"
 #include "scene.h"
@@ -10,6 +12,7 @@
 #include "directional_light.h"
 #include "point_light.h"
 
+using namespace Eigen;
 using namespace std;
 
 ThreeDVector* global_ambient = new ThreeDVector(0, 0, 0);
@@ -124,6 +127,10 @@ void loadScene(std::string file) {
   vector<ThreeDVector*> normal_vertices;
   //GRID SIZE (FOR Anti Aliasing)
   int grid_size = 1;
+  //Matrix Stack
+  //TODO: need to push identity matrix
+  stack<Matrix4f> matrix_stack;
+  Matrix4f current_matrix;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -320,10 +327,14 @@ void loadScene(std::string file) {
       //translate x y z
       //  A translation 3-vector
       else if(!splitline[0].compare("translate")) {
-        // x: atof(splitline[1].c_str())
-        // y: atof(splitline[2].c_str())
-        // z: atof(splitline[3].c_str())
-        // Update top of matrix stack
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        Matrix4f m = Matrix4f::Identity();
+        m(0,3) = x;
+        m(1,3) = y;
+        m(2,3) = z;
+        current_matrix = m;
       }
       //rotate x y z angle
       //  Rotate by angle (in degrees) about the given axis as in OpenGL.
@@ -337,17 +348,22 @@ void loadScene(std::string file) {
       //scale x y z
       //  Scale by the corresponding amount in each axis (a non-uniform scaling).
       else if(!splitline[0].compare("scale")) {
-        // x: atof(splitline[1].c_str())
-        // y: atof(splitline[2].c_str())
-        // z: atof(splitline[3].c_str())
-        // Update top of matrix stack
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        Matrix4f m = Matrix4f::Zero();
+        m(0,0) = x;
+        m(1,1) = y;
+        m(2,2) = z;
+        m(3,3) = 1;
+        current_matrix = m;
       }
       //pushTransform
       //  Push the current modeling transform on the stack as in OpenGL. 
       //  You might want to do pushTransform immediately after setting 
       //   the camera to preserve the “identity” transformation.
       else if(!splitline[0].compare("pushTransform")) {
-        //mst.push();
+        matrix_stack.push(current_matrix);
       }
       //popTransform
       //  Pop the current transform from the stack as in OpenGL. 
@@ -356,7 +372,7 @@ void loadScene(std::string file) {
       //  (assuming the initial camera transformation is on the stack as 
       //  discussed above).
       else if(!splitline[0].compare("popTransform")) {
-        //mst.pop();
+        matrix_stack.pop();
       }
 
       //directional x y z r g b

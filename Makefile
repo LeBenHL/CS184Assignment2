@@ -1,7 +1,7 @@
 OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o raytracer.o sphere.o triangle.o 
 CC = g++
 LDFLAGS = 
-INCLUDE = -I /Users/ben/currentSem/CS184/CS184Assignment2/
+INCLUDE = -I ./
 	
 RM = /bin/rm -f 
 all: main 
