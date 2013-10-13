@@ -128,9 +128,7 @@ void loadScene(std::string file) {
   //GRID SIZE (FOR Anti Aliasing)
   int grid_size = 1;
   //Matrix Stack
-  //TODO: need to push identity matrix
-  stack<Matrix4f> matrix_stack;
-  Matrix4f current_matrix;
+  MatrixStack mst;
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
