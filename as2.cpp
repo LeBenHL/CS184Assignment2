@@ -339,10 +339,42 @@ void loadScene(std::string file) {
       //rotate x y z angle
       //  Rotate by angle (in degrees) about the given axis as in OpenGL.
       else if(!splitline[0].compare("rotate")) {
-        // x: atof(splitline[1].c_str())
-        // y: atof(splitline[2].c_str())
-        // z: atof(splitline[3].c_str())
-        // angle: atof(splitline[4].c_str())
+        float x = atof(splitline[1].c_str());
+        float y = atof(splitline[2].c_str());
+        float z = atof(splitline[3].c_str());
+        float angle = atof(splitline[4].c_str());
+        float theta = angle * 2 * PI / 180;
+        ThreeDVector* rotation_axis = new ThreeDVector(x, y, z);
+        Matrix4f m = Matrix4f::Identity();
+
+        //From Wikipedia Rotation matrix from axis and angle
+        float cos_theta = cos(theta);
+        float one_minus_cos_theta = 1 - cos(theta);
+        float sin_theta = sin(theta);
+
+        float ux_square = rotation_axis->x * rotation_axis->x;
+        float uy_square = rotation_axis->y * rotation_axis->y;
+        float uz_square = rotation_axis->z * rotation_axis->z;
+
+        float ux_uy = rotation_axis->x * rotation_axis->y;
+        float ux_uz = rotation_axis->x * rotation_axis->z;
+        float uy_uz = rotation_axis->y * rotation_axis->z;
+
+        float ux_times_sin_theta = rotation_axis->x * sin_theta;
+        float uy_times_sin_theta = rotation_axis->y * sin_theta;
+        float uz_times_sin_theta = rotation_axis->z * sin_theta;
+
+        m(0, 0) = cos_theta + ux_square * one_minus_cos_theta;
+        m(0, 1) = ux_uy * one_minus_cos_theta - uz_times_sin_theta;
+        m(0, 2) = ux_uz * one_minus_cos_theta + uy_times_sin_theta;
+        m(1, 0) = ux_uy * one_minus_cos_theta + uz_times_sin_theta;
+        m(1, 1) = cos_theta + uy_square * one_minus_cos_theta;
+        m(1, 2) = uy_uz * one_minus_cos_theta - ux_times_sin_theta;
+        m(2, 0) = ux_uz * one_minus_cos_theta - uy_times_sin_theta;
+        m(2, 1) = uy_uz * one_minus_cos_theta + ux_times_sin_theta;
+        m(2, 2) = cos_theta + uz_square * one_minus_cos_theta;        
+
+        rotation_axis->normalize_bang();
         // Update top of matrix stack
       }
       //scale x y z
@@ -351,11 +383,10 @@ void loadScene(std::string file) {
         float x = atof(splitline[1].c_str());
         float y = atof(splitline[2].c_str());
         float z = atof(splitline[3].c_str());
-        Matrix4f m = Matrix4f::Zero();
+        Matrix4f m = Matrix4f::Identity();
         m(0,0) = x;
         m(1,1) = y;
         m(2,2) = z;
-        m(3,3) = 1;
         current_matrix = m;
       }
       //pushTransform
