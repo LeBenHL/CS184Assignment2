@@ -128,7 +128,9 @@ void loadScene(std::string file) {
   //GRID SIZE (FOR Anti Aliasing)
   int grid_size = 1;
   //Matrix Stack
-  MatrixStack mst;
+  stack<Matrix4f*> matrix_stack;
+  Matrix4f* current_matrix = Matrix4f::Identity();
+  matrix_stack.push();
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -332,7 +334,7 @@ void loadScene(std::string file) {
         m(0,3) = x;
         m(1,3) = y;
         m(2,3) = z;
-        current_matrix = m;
+        current_matrix *= m;
       }
       //rotate x y z angle
       //  Rotate by angle (in degrees) about the given axis as in OpenGL.
@@ -343,6 +345,8 @@ void loadScene(std::string file) {
         float angle = atof(splitline[4].c_str());
         float theta = angle * 2 * PI / 180;
         ThreeDVector* rotation_axis = new ThreeDVector(x, y, z);
+        rotation_axis->normalize_bang();
+        
         Matrix4f m = Matrix4f::Identity();
 
         //From Wikipedia Rotation matrix from axis and angle
@@ -372,7 +376,7 @@ void loadScene(std::string file) {
         m(2, 1) = uy_uz * one_minus_cos_theta + ux_times_sin_theta;
         m(2, 2) = cos_theta + uz_square * one_minus_cos_theta;        
 
-        rotation_axis->normalize_bang();
+        current_matrix *= m;
         // Update top of matrix stack
       }
       //scale x y z
@@ -385,7 +389,7 @@ void loadScene(std::string file) {
         m(0,0) = x;
         m(1,1) = y;
         m(2,2) = z;
-        current_matrix = m;
+        current_matrix *= m;
       }
       //pushTransform
       //  Push the current modeling transform on the stack as in OpenGL. 
@@ -401,7 +405,11 @@ void loadScene(std::string file) {
       //  (assuming the initial camera transformation is on the stack as 
       //  discussed above).
       else if(!splitline[0].compare("popTransform")) {
+        if(matrix_stack.empty()){
+          std::cerr << "Empty stack can't be popped." << endl;
+        }
         matrix_stack.pop();
+        current_matrix = matrix_stack.top();
       }
 
       //directional x y z r g b
