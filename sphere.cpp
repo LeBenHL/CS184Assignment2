@@ -66,7 +66,7 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 		return false;
 	}
 
-	float t_hit = *std::min_actelement(t_hits.begin(), t_hits.end());
+	float t_hit = *std::min_element(t_hits.begin(), t_hits.end());
 
 	record->t_hit = t_hit;
 
@@ -97,7 +97,7 @@ ThreeDVector* Sphere::get_normal(ThreeDVector* surface_point, ThreeDVector* view
 	delete surface_minus_center;
 	Eigen::Vector4f untransformed_normal = Eigen::Vector4f(normal->x, normal->y, normal->z, 0);
 	delete normal;
-	Eigen::Vector4f transformed_normal = this->inverse_transpose * untransformed_pos;
+	Eigen::Vector4f transformed_normal = this->inverse_transpose * untransformed_normal;
 	ThreeDVector* new_normal = new ThreeDVector(transformed_normal[0], transformed_normal[1], transformed_normal[2]);
 	return new_normal;
 }
