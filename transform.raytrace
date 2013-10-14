@@ -1,8 +1,8 @@
 size 640 640
-output transform_translate.png
+output transform.png
 
 pushTransform
-translate 1 1 1
+translate 0 0 0
 scale 2 2 2
 
 #camera -12 0 8 2 0 -1 0 1 0 45
@@ -15,4 +15,4 @@ specular .8 .8 .8
 shininess 50
 sphere 0 0 -5 1.5
 
-directional -1 -1 -1 .8 .8 .8
+directional 0 0 -1 .8 .8 .8
