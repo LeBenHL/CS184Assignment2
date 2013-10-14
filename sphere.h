@@ -12,6 +12,7 @@ class Sphere: public Surface {
   	Sphere(ThreeDVector* center, float radius);
   	bool hit(Ray* _ray, Record* record);
   	ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector);
+  	void apply_transformation(Eigen::Matrix4f transformation);
   	~Sphere();
 };
 

@@ -1,6 +1,8 @@
 size 800 800
-output lichen2.png
+output test.png
 
+rotate 0 0 1 90
+scale 1.5 1.5 1.5
 pushTransform
 
 #camera -12 0 8 2 0 -1 0 1 0 45
@@ -32,14 +34,6 @@ diffuse 0 .5 .5
 specular .8 .8 .8
 shininess 50
 sphere 0 3 -1 1
-
-vertex 3 3 -1
-vertex 4 3 -1
-vertex 3.5 4 0
-vertex -1 -1 0
-vertex 1 -1 0
-vertex 0 2 0
-tri 2 1 0
 
 #directional 1 0 0 .8 .8 .8
 #directional -1 0 0 .8 .8 .8

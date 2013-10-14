@@ -74,7 +74,7 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 
 	if (!is_identity) {
 		Eigen::Vector4f untransformed_pos = Eigen::Vector4f(point_hit->x, point_hit->y, point_hit->z, 1);
-		Eigen::Vector4f point_hit_4f = this->inverse_transpose * untransformed_pos;
+		Eigen::Vector4f point_hit_4f = this->transformation * untransformed_pos;
 		record->position_hit = new ThreeDVector(point_hit_4f[0], point_hit_4f[1], point_hit_4f[2]);
 		record->untransformed_position_hit = point_hit;	
 	} else {
@@ -105,6 +105,12 @@ ThreeDVector* Sphere::get_normal(ThreeDVector* surface_point, ThreeDVector* view
 	}else{
 		return normal;
 	}
+}
+
+void Sphere::apply_transformation(Eigen::Matrix4f transformation) {
+	this->transformation = transformation;
+    this->inverse = this->transformation.inverse();
+    this->inverse_transpose = this->inverse.transpose();
 }
 
 Sphere::~Sphere() {

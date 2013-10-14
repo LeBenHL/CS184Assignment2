@@ -219,9 +219,7 @@ void loadScene(std::string file) {
         sphere->specular = specular->clone();
         sphere->power_coefficient = shininess;
         sphere->emission = emission->clone();
-        sphere->transformation = Matrix4f(current_matrix);
-        sphere->inverse = sphere->transformation.inverse();
-        sphere->inverse_transpose = sphere->inverse.transpose();
+        sphere->apply_transformation(Matrix4f(current_matrix));
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -287,14 +285,14 @@ void loadScene(std::string file) {
         ThreeDVector* a = vertices[v1];
         ThreeDVector* b = vertices[v2];
         ThreeDVector* c = vertices[v3];
+
+
         Triangle* triangle = new Triangle(a->clone(), b->clone(), c->clone());
         triangle->diffuse = diffuse->clone();
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        triangle->transformation = Matrix4f(current_matrix);
-        triangle->inverse = triangle->transformation.inverse();
-        triangle->inverse_transpose = triangle->inverse.transpose();
+        triangle->apply_transformation(Matrix4f(current_matrix));
         surfaces.push_back(triangle);
       }
       //trinormal v1 v2 v3
@@ -354,7 +352,7 @@ void loadScene(std::string file) {
         float y = atof(splitline[2].c_str());
         float z = atof(splitline[3].c_str());
         float angle = atof(splitline[4].c_str());
-        float theta = angle * 2 * PI / 180;
+        float theta = angle * PI / 180;
         ThreeDVector* rotation_axis = new ThreeDVector(x, y, z);
         rotation_axis->normalize_bang();
         

@@ -17,6 +17,7 @@ class Surface {
 
 		virtual bool hit(Ray* ray, Record* record) = 0;
 		virtual ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) = 0;
+		virtual void apply_transformation(Eigen::Matrix4f transformation) = 0;
 };
 
 #endif

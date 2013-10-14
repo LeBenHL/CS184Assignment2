@@ -94,6 +94,8 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	for (vector<Ray*>::iterator i = rays.begin(); i != rays.end(); ++i) {
 		if (!this->hits_surface(*i, except_surface)) {
 			count++;
+		} else {
+			//cout << (*i)->repr() << endl;
 		}
 	}
 	return count;

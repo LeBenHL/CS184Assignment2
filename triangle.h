@@ -14,6 +14,7 @@ class Triangle: public Surface{
 
 		Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c);
 		ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector);
+		void apply_transformation(Eigen::Matrix4f transformation);
 		bool hit(Ray* ray, Record* record);
 
 		~Triangle();

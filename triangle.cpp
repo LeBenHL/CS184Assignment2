@@ -84,6 +84,23 @@ ThreeDVector* Triangle::get_normal(ThreeDVector* surface_point, ThreeDVector* vi
 	}
 }
 
+void Triangle::apply_transformation(Eigen::Matrix4f transformation) {
+    Eigen::Vector4f old_a = Eigen::Vector4f(this->a->x, this->a->y, this->a->z, 1);
+    Eigen::Vector4f old_b = Eigen::Vector4f(this->b->x, this->b->y, this->b->z, 1);
+    Eigen::Vector4f old_c = Eigen::Vector4f(this->c->x, this->c->y, this->c->z, 1);
+    Eigen::Vector4f new_a = transformation * old_a;
+    Eigen::Vector4f new_b = transformation * old_b;
+    Eigen::Vector4f new_c = transformation * old_c;
+
+    delete this->a;
+    delete this->b;
+    delete this->c;
+
+    this->a = new ThreeDVector(new_a[0], new_a[1], new_a[2]);
+    this->b = new ThreeDVector(new_b[0], new_b[1], new_b[2]);
+    this->c = new ThreeDVector(new_c[0], new_c[1], new_c[2]);
+}
+
 Triangle::~Triangle(){
 	delete a;
 	delete b;
