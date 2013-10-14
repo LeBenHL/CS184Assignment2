@@ -6,6 +6,12 @@ pushTransform
 #camera -12 0 8 2 0 -1 0 1 0 45
 camera 0 0 2 0 0 -1 0 1 0 60
 
+diffuse 0 0 .5
+specular .8 .8 .8
+shininess 50
 vertex 0 1 0
 vertex 1 0 0
 vertex 0 0 0
+tri 0 1 2
+
+directional 0 0 -1 .8 .8 .8

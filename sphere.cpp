@@ -79,7 +79,7 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 		record->untransformed_position_hit = point_hit;	
 	} else {
 		record->position_hit = point_hit;
-		record->untransformed_position_hit = point_hit;
+		record->untransformed_position_hit = point_hit->clone();
 	}
 
 	delete e_minus_c;

@@ -66,7 +66,7 @@ bool Triangle::hit(Ray* ray, Record* record){
 
 	record->t_hit = t;
 	record->position_hit = point_hit;
-	record->untransformed_position_hit = point_hit;
+	record->untransformed_position_hit = point_hit->clone();
 
 	return true;
 }

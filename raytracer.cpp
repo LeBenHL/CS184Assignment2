@@ -57,11 +57,10 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 		}
 
 		delete point_hit;
+		delete untransformed_point_hit;
 		delete normal;
 		delete view_direction;
 		delete surface_color;
-		delete record->position_hit;
-    	delete record->untransformed_position_hit;
 		delete record;
 		return pixel_color;
 	} else {
@@ -79,6 +78,9 @@ bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
 			continue;
 		}
     	if (surface->hit(ray, record)) {
+    		delete record->position_hit;
+    		delete record->untransformed_position_hit;
+    		delete record;
     		return true;
     	} 
 	}
