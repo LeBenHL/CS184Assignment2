@@ -61,7 +61,13 @@ bool Triangle::hit(Ray* ray, Record* record){
 	if(beta < 0 || beta > (1-gamma)){
 		return false;
 	}
+
+	ThreeDVector* point_hit = ray->point_at(t);
+
 	record->t_hit = t;
+	record->position_hit = point_hit;
+	record->untransformed_position_hit = point_hit;
+
 	return true;
 }
 

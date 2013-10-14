@@ -60,7 +60,8 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 		delete normal;
 		delete view_direction;
 		delete surface_color;
-		
+		delete record->position_hit;
+    	delete record->untransformed_position_hit;
 		delete record;
 		return pixel_color;
 	} else {

@@ -14,17 +14,17 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 	Ray* ray;
 	//Transform ray
 	if (!is_identity) {
-		Eigen::Vector4f old_position = Eigen::Vector4f(_ray->position->x, _ray->position->y, _ray->position->z, 0);
-		Eigen::Vector4f old_direction = Eigen::Vector4f(_ray->direction->x, _ray->direction->y, _ray->direction->z, 1);
+		Eigen::Vector4f old_position = Eigen::Vector4f(_ray->position->x, _ray->position->y, _ray->position->z, 1);
+		Eigen::Vector4f old_direction = Eigen::Vector4f(_ray->direction->x, _ray->direction->y, _ray->direction->z, 0);
 		Eigen::Vector4f m_inverse_times_position = this->inverse * old_position;
 		Eigen::Vector4f m_inverse_times_direction = this->inverse * old_direction;
 		ThreeDVector* new_position = new ThreeDVector(m_inverse_times_position[0], m_inverse_times_position[1], m_inverse_times_position[2]);
 		ThreeDVector* new_direction = new ThreeDVector(m_inverse_times_direction[0], m_inverse_times_direction[1], m_inverse_times_direction[2]);
 		ray = new Ray(new_position, new_direction, _ray->t_min, _ray->t_max);
-		cout << this->transformation << endl;
+		/*cout << this->transformation << endl;
 		cout << this->inverse << endl;
 		cout << ray->repr() << endl;
-		cout << _ray->repr() << endl << endl;
+		cout << _ray->repr() << endl << endl;*/
 	} else {
 		ray = _ray;
 	}
@@ -73,7 +73,7 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 	ThreeDVector* point_hit = ray->point_at(t_hit);
 
 	if (!is_identity) {
-		Eigen::Vector4f untransformed_pos = Eigen::Vector4f(point_hit->x, point_hit->y, point_hit->z, 0);
+		Eigen::Vector4f untransformed_pos = Eigen::Vector4f(point_hit->x, point_hit->y, point_hit->z, 1);
 		Eigen::Vector4f point_hit_4f = this->inverse_transpose * untransformed_pos;
 		record->position_hit = new ThreeDVector(point_hit_4f[0], point_hit_4f[1], point_hit_4f[2]);
 		record->untransformed_position_hit = point_hit;	
@@ -87,7 +87,6 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 	if (!is_identity) {
 		delete ray;
 	}
-	cout << "HEY" << endl;
 	return true; 
 }
 
