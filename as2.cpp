@@ -121,9 +121,7 @@ void parseObj(const char* filename) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        triangle->transformation = Matrix4f(current_matrix);
-        triangle->inverse = triangle->transformation.inverse();
-        triangle->inverse_transpose = triangle->inverse.transpose();
+        triangle->apply_transformation(Matrix4f(current_matrix));
         surfaces.push_back(triangle);
       }
     }
@@ -327,9 +325,7 @@ void loadScene(std::string file) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        triangle->transformation = Matrix4f(current_matrix);
-        triangle->inverse = triangle->transformation.inverse();
-        triangle->inverse_transpose = triangle->inverse.transpose();
+        triangle->apply_transformation(Matrix4f(current_matrix));
         surfaces.push_back(triangle);
       }
 

@@ -1,7 +1,9 @@
-size 800 800
-output teddy.png
+size 640 640
+output teddy_back.png
 
 camera 0 0 60 0 0 -1 0 1 0 60
+
+rotate 0 1 0 180
 
 diffuse 0 0 .5
 specular .8 .8 .8
