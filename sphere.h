@@ -10,7 +10,7 @@ class Sphere: public Surface {
   	ThreeDVector* center;
   	float radius;
   	Sphere(ThreeDVector* center, float radius);
-  	bool hit(Ray* ray, Record* record);
+  	bool hit(Ray* _ray, Record* record);
   	ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector);
   	~Sphere();
 };

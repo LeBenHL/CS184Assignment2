@@ -18,6 +18,36 @@ using namespace std;
 ThreeDVector* global_ambient = new ThreeDVector(0, 0, 0);
 float PI = 3.14159265359;
 
+//store variables and set stuff at the end
+int width = 1000, height = 1000;
+std::string fname = "output.png";
+
+//Camera
+Camera* camera = new Camera(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//Surfaces
+vector<Surface*> surfaces;
+//LIGHTS CAMERA AND ACTION BUT NOT CAMERA (see above)
+vector<Light*> lights;
+//MAX DEPTH
+int depth = 5;
+//DIFFUSE
+ThreeDVector* diffuse = new ThreeDVector(0, 0, 0);
+//SPECULAR
+ThreeDVector* specular = new ThreeDVector(0, 0, 0);
+//SHININESS
+float shininess = 1;
+//EMISSION
+ThreeDVector* emission = new ThreeDVector(0, 0, 0);
+//VERTICES
+vector<ThreeDVector*> vertices;
+//Normal Vertices
+vector<ThreeDVector*> normal_vertices;
+//GRID SIZE (FOR Anti Aliasing)
+int grid_size = 1;
+//Matrix Stack
+stack<Matrix4f> matrix_stack;
+Matrix4f current_matrix = Matrix4f::Identity();
+
 void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
   //Encode the image
@@ -27,7 +57,7 @@ void createPng(const char* filename, std::vector<unsigned char>& image, unsigned
   if(error) std::cout << "encoder error " << error << ": "<< lodepng_error_text(error) << std::endl;
 }
 
-void parseObj(const char* filename, vector<Surface*>* surfaces, ThreeDVector* diffuse, ThreeDVector* specular, float shininess, ThreeDVector* emission) {
+void parseObj(const char* filename) {
   vector<ThreeDVector*> vertices;
 
   std::ifstream inpfile(filename);
@@ -91,7 +121,10 @@ void parseObj(const char* filename, vector<Surface*>* surfaces, ThreeDVector* di
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        surfaces->push_back(triangle);
+        triangle->transformation = Matrix4f(current_matrix);
+        triangle->inverse = triangle->transformation.inverse();
+        triangle->inverse_transpose = triangle->inverse.transpose();
+        surfaces.push_back(triangle);
       }
     }
   }
@@ -100,37 +133,6 @@ void parseObj(const char* filename, vector<Surface*>* surfaces, ThreeDVector* di
 }
 
 void loadScene(std::string file) {
-
-  //store variables and set stuff at the end
-  int width = 1000, height = 1000;
-  std::string fname = "output.png";
-
-  //Camera
-  Camera* camera = new Camera(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  //Surfaces
-  vector<Surface*> surfaces;
-  //LIGHTS CAMERA AND ACTION BUT NOT CAMERA (see above)
-  vector<Light*> lights;
-  //MAX DEPTH
-  int depth = 5;
-  //DIFFUSE
-  ThreeDVector* diffuse = new ThreeDVector(0, 0, 0);
-  //SPECULAR
-  ThreeDVector* specular = new ThreeDVector(0, 0, 0);
-  //SHININESS
-  float shininess = 1;
-  //EMISSION
-  ThreeDVector* emission = new ThreeDVector(0, 0, 0);
-  //VERTICES
-  vector<ThreeDVector*> vertices;
-  //Normal Vertices
-  vector<ThreeDVector*> normal_vertices;
-  //GRID SIZE (FOR Anti Aliasing)
-  int grid_size = 1;
-  //Matrix Stack
-  stack<Matrix4f*> matrix_stack;
-  Matrix4f* current_matrix = Matrix4f::Identity();
-  matrix_stack.push();
 
   std::ifstream inpfile(file.c_str());
   if(!inpfile.is_open()) {
@@ -217,6 +219,9 @@ void loadScene(std::string file) {
         sphere->specular = specular->clone();
         sphere->power_coefficient = shininess;
         sphere->emission = emission->clone();
+        sphere->transformation = Matrix4f(current_matrix);
+        sphere->inverse = sphere->transformation.inverse();
+        sphere->inverse_transpose = sphere->inverse.transpose();
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -287,6 +292,9 @@ void loadScene(std::string file) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
+        triangle->transformation = Matrix4f(current_matrix);
+        triangle->inverse = triangle->transformation.inverse();
+        triangle->inverse_transpose = triangle->inverse.transpose();
         surfaces.push_back(triangle);
       }
       //trinormal v1 v2 v3
@@ -321,6 +329,9 @@ void loadScene(std::string file) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
+        triangle->transformation = Matrix4f(current_matrix);
+        triangle->inverse = triangle->transformation.inverse();
+        triangle->inverse_transpose = triangle->inverse.transpose();
         surfaces.push_back(triangle);
       }
 
@@ -334,7 +345,7 @@ void loadScene(std::string file) {
         m(0,3) = x;
         m(1,3) = y;
         m(2,3) = z;
-        current_matrix *= m;
+        current_matrix = current_matrix * m;
       }
       //rotate x y z angle
       //  Rotate by angle (in degrees) about the given axis as in OpenGL.
@@ -376,7 +387,7 @@ void loadScene(std::string file) {
         m(2, 1) = uy_uz * one_minus_cos_theta + ux_times_sin_theta;
         m(2, 2) = cos_theta + uz_square * one_minus_cos_theta;        
 
-        current_matrix *= m;
+        current_matrix = current_matrix * m;
         // Update top of matrix stack
       }
       //scale x y z
@@ -389,14 +400,16 @@ void loadScene(std::string file) {
         m(0,0) = x;
         m(1,1) = y;
         m(2,2) = z;
-        current_matrix *= m;
+        current_matrix = current_matrix * m;
       }
       //pushTransform
       //  Push the current modeling transform on the stack as in OpenGL. 
       //  You might want to do pushTransform immediately after setting 
       //   the camera to preserve the “identity” transformation.
       else if(!splitline[0].compare("pushTransform")) {
-        matrix_stack.push(current_matrix);
+        //memcpy(saved_matrix, &current_matrix, sizeof(saved_matrix));
+        Matrix4f saved_matrix = Matrix4f(current_matrix);
+        matrix_stack.push(saved_matrix);
       }
       //popTransform
       //  Pop the current transform from the stack as in OpenGL. 
@@ -492,7 +505,7 @@ void loadScene(std::string file) {
       //obj filename 
       else if(!splitline[0].compare("obj")) {
         const char* file_name = splitline[1].c_str();
-        parseObj(file_name, &surfaces, diffuse, specular, shininess, emission);
+        parseObj(file_name);
       } 
       //aa grid_size 
       else if(!splitline[0].compare("aa")) {

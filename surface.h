@@ -3,12 +3,16 @@
 
 #include "ray.h"
 #include "three_d_vector.h"
+#include <Eigen/Dense>
 
 class Surface {
 	public:
 		ThreeDVector* diffuse;
 		ThreeDVector* specular;
 		ThreeDVector* emission;
+		Eigen::Matrix4f transformation;
+		Eigen::Matrix4f inverse;
+		Eigen::Matrix4f inverse_transpose;
 		float power_coefficient;
 
 		virtual bool hit(Ray* ray, Record* record) = 0;

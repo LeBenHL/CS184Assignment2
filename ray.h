@@ -9,6 +9,8 @@ using namespace std;
 
 struct Record{
     float t_hit; 
+    ThreeDVector* position_hit;
+    ThreeDVector* untransformed_position_hit;
 }; 
 
 class Ray{
