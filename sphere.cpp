@@ -91,14 +91,20 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 }
 
 ThreeDVector* Sphere::get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector){
+	bool is_identity = this->transformation == Eigen::Matrix4f::Identity();
 	ThreeDVector* surface_minus_center = surface_point->vector_subtract(this->center);
 	ThreeDVector* normal = surface_minus_center->normalize();
 	delete surface_minus_center;
-	Eigen::Vector4f untransformed_normal = Eigen::Vector4f(normal->x, normal->y, normal->z, 0);
-	delete normal;
-	Eigen::Vector4f transformed_normal = this->inverse_transpose * untransformed_normal;
-	ThreeDVector* new_normal = new ThreeDVector(transformed_normal[0], transformed_normal[1], transformed_normal[2]);
-	return new_normal;
+	if(!is_identity){
+		Eigen::Vector4f untransformed_normal = Eigen::Vector4f(normal->x, normal->y, normal->z, 0);
+		delete normal;
+		Eigen::Vector4f transformed_normal = this->inverse_transpose * untransformed_normal;
+		ThreeDVector* new_normal = new ThreeDVector(transformed_normal[0], transformed_normal[1], transformed_normal[2]);
+		new_normal->normalize_bang();
+		return new_normal;
+	}else{
+		return normal;
+	}
 }
 
 Sphere::~Sphere() {
