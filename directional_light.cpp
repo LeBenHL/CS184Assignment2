@@ -25,6 +25,16 @@ vector<Ray*> DirectionalLight::get_shadow_rays(ThreeDVector* position, int sampl
 	return rays;
 }
 
+void DirectionalLight::apply_transformation(Eigen::Matrix4f transformation) {
+	Eigen::Vector4f old_direction = Eigen::Vector4f(this->direction->x, this->direction->y, this->direction->z, 0);
+	Eigen::Vector4f new_direction = transformation * old_direction;
+
+    delete this->direction;
+
+    this->direction = new ThreeDVector(new_direction[0], new_direction[1], new_direction[2]);
+    this->direction->normalize_bang();
+}
+
 DirectionalLight::~DirectionalLight(){
 	delete direction;
 }

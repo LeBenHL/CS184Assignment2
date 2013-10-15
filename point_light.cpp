@@ -54,6 +54,15 @@ vector<Ray*> PointLight::get_shadow_rays(ThreeDVector* position, int sample_size
 	return rays;
 }
 
+void PointLight::apply_transformation(Eigen::Matrix4f transformation) {
+	Eigen::Vector4f old_pos = Eigen::Vector4f(this->position->x, this->position->y, this->position->z, 1);
+	Eigen::Vector4f new_pos = transformation * old_pos;
+
+    delete this->position;
+
+    this->position = new ThreeDVector(new_pos[0], new_pos[1], new_pos[2]);
+}
+
 PointLight::~PointLight(){
 	delete position;
 }

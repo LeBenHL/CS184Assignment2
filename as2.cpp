@@ -430,6 +430,7 @@ void loadScene(std::string file) {
         float b = atof(splitline[6].c_str());
         // add light to scene...
         DirectionalLight* light = new DirectionalLight(x, y, z, r, g, b);
+        light->apply_transformation(Matrix4f(current_matrix));
         lights.push_back(light);
       }
       //point x y z r g b
@@ -443,6 +444,7 @@ void loadScene(std::string file) {
         float b = atof(splitline[6].c_str());
         // add light to scene...
         PointLight* light = new PointLight(x, y, z, r, g, b);
+        light->apply_transformation(Matrix4f(current_matrix));
         lights.push_back(light);
       }
       //attenuation const linear quadratic

@@ -12,6 +12,7 @@ class PointLight: public Light {
   	ThreeDVector* get_light_direction_from(ThreeDVector* postion);
   	vector<Ray*> get_shadow_rays(ThreeDVector* position, int sample_size);
   	Ray* get_shadow_ray(ThreeDVector* postion);
+  	void apply_transformation(Eigen::Matrix4f transformation);
 };
 
 #endif
