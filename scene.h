@@ -22,7 +22,7 @@ class Scene{
 		int recursive_depth;
 		int grid_size;
 
-		Scene(Camera*, std::vector<Surface*>, std::vector<Light*>, int, int, int recursive_depth, int grid_size);
+		Scene(Camera*, std::vector<Surface*>, std::vector<Light*>, int, int, int recursive_depth, int grid_size, float focal_length, bool soft_shadow);
 		~Scene();
 		ThreeDVector* get_color(int, int);
 		ThreeDVector* get_color_helper(int, int, int);

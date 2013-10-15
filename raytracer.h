@@ -15,10 +15,11 @@ class RayTracer{
 	public:
 		vector<Surface*> surfaces;
 		vector<Light*> lights;
+		bool soft_shadow;
 		ThreeDVector* trace(Ray* ray, int recursive_depth, Surface* except_surface);
 		bool hits_surface(Ray* ray, Surface* except_surface);
 		int num_hits_light(vector<Ray*> rays, Surface* surface);
-		RayTracer(vector<Surface*> surfaces, vector<Light*> lights);
+		RayTracer(vector<Surface*> surfaces, vector<Light*> lights, bool soft_shadow);
 		~RayTracer();
 	private:
 		ThreeDVector* calculate_diffuse_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* diffuse, ThreeDVector* normal);

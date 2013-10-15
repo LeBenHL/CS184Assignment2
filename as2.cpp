@@ -47,6 +47,10 @@ int grid_size = 1;
 //Matrix Stack
 stack<Matrix4f> matrix_stack;
 Matrix4f current_matrix = Matrix4f::Identity();
+//
+float focal_length = 1;
+//
+bool soft_shadow = false;
 
 void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
@@ -415,8 +419,8 @@ void loadScene(std::string file) {
         if(matrix_stack.empty()){
           std::cerr << "Empty stack can't be popped." << endl;
         }
-        matrix_stack.pop();
         current_matrix = matrix_stack.top();
+        matrix_stack.pop();
       }
 
       //directional x y z r g b
@@ -507,13 +511,20 @@ void loadScene(std::string file) {
       else if(!splitline[0].compare("aa")) {
         grid_size = atoi(splitline[1].c_str());
       } 
+      else if(!splitline[0].compare("dof")) {
+        camera->dof = true;
+      } else if(!splitline[0].compare("focalLength")) {
+        focal_length = atof(splitline[1].c_str());
+      } else if(!splitline[0].compare("softShadow")) {
+        soft_shadow = true;
+      } 
       else {
         std::cerr << "Unknown command: " << splitline[0] << std::endl;
       }
     }
   
 
-    Scene* scene = new Scene(camera, surfaces, lights, width, height, depth, grid_size);
+    Scene* scene = new Scene(camera, surfaces, lights, width, height, depth, grid_size, focal_length, soft_shadow);
 
     //NOTE: this sample will overwrite the file or test.png without warning!
     const char* filename = fname.c_str();

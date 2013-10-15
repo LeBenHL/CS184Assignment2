@@ -15,6 +15,8 @@ class Camera{
 		// Focal Length (How far away am I from image plane)
 		float focal_length;
 
+		bool dof;
+
 		//Orthonormal basis
 		ThreeDVector* u;
 		ThreeDVector* v;

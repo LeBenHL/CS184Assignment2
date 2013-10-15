@@ -1,8 +1,9 @@
 #include "raytracer.h"
 
-RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights) {
+RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights, bool _soft_shadow) {
 	surfaces = _surfaces;
 	lights = _lights;
+	soft_shadow = _soft_shadow;
 }
 
 ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
@@ -32,6 +33,7 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 		view_direction->normalize_bang();
 		ThreeDVector* surface_color = this->calculate_color(first_hit, this->lights, normal, point_hit, view_direction); 
 		pixel_color->vector_add_bang(global_ambient);
+		pixel_color->vector_add_bang(first_hit->emission);
 		pixel_color->vector_add_bang(surface_color);
 
 		if (depth > 0) {
@@ -47,7 +49,7 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 			delete reflect_direction;
 
 			ThreeDVector* ray_color = this->trace(reflect_ray, depth - 1, first_hit);
-			ThreeDVector* reflection_color = first_hit->emission->vector_multiply(ray_color);
+			ThreeDVector* reflection_color = first_hit->specular->vector_multiply(ray_color);
 
 			pixel_color->vector_add_bang(reflection_color);
 
@@ -109,26 +111,39 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
  		Light* light = *i;
  		ThreeDVector* light_direction = light->get_light_direction_from(point_hit);
 
- 		int number_samples = 32;
- 		vector<Ray*> shadow_rays = light->get_shadow_rays(point_hit, number_samples);
- 		int num_hits_light = this->num_hits_light(shadow_rays, surface);
- 		if  (num_hits_light > 0) {
- 		//if (true) {
- 			float multiplier = float(num_hits_light) / number_samples;
+ 		if (this->soft_shadow) {
+	 		int number_samples = 32;
+	 		vector<Ray*> shadow_rays = light->get_shadow_rays(point_hit, number_samples);
+	 		int num_hits_light = this->num_hits_light(shadow_rays, surface);
+	 		if  (num_hits_light > 0) {
+	 		//if (true) {
+	 			float multiplier = float(num_hits_light) / number_samples;
 
- 			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
- 			specular_component->scalar_multiply_bang(multiplier);
-	 		surface_color->vector_add_bang(specular_component);
-	        delete specular_component;
+	 			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+	 			specular_component->scalar_multiply_bang(multiplier);
+		 		surface_color->vector_add_bang(specular_component);
+		        delete specular_component;
 
- 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
- 			diffuse_component->scalar_multiply_bang(multiplier);
- 			surface_color->vector_add_bang(diffuse_component);
-        	delete diffuse_component;
+	 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
+	 			diffuse_component->scalar_multiply_bang(multiplier);
+	 			surface_color->vector_add_bang(diffuse_component);
+	        	delete diffuse_component;
+	        }
+	        shadow_rays.clear();
+        } else {
+        	Ray* shadow_ray = light->get_shadow_ray(point_hit);
+        	if (this->hits_surface(shadow_ray, surface)) {
+        		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+		 		surface_color->vector_add_bang(specular_component);
+		        delete specular_component;
+
+	 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
+	 			surface_color->vector_add_bang(diffuse_component);
+	        	delete diffuse_component;
+        	}
         } 
         
         delete light_direction;
-       	shadow_rays.clear();
     }
     return surface_color;
 

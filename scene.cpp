@@ -1,17 +1,15 @@
 #include "scene.h"
 
-Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth, int _grid_size) {
+Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth, int _grid_size, float focal_length, bool soft_shadow) {
 	camera = _camera;
 	surfaces = _surfaces;
 	lights = _lights;
 	recursive_depth = _recursive_depth;
 	grid_size = _grid_size;
 
-	float focal_length = 1;
-
 	camera->focal_length = focal_length;
 	sampler = new Sampler(width, height, camera->fov, focal_length);
-	tracer = new RayTracer(surfaces, lights);
+	tracer = new RayTracer(surfaces, lights, soft_shadow);
 }
 
 ThreeDVector* Scene::get_color(int x,int y) {
