@@ -8,6 +8,7 @@
 #include "ray.h"
 #include "surface.h"
 #include "light.h"
+#include "AABBNode.h"
 
 using namespace std;
 
@@ -16,6 +17,7 @@ class RayTracer{
 		vector<Surface*> surfaces;
 		vector<Light*> lights;
 		bool soft_shadow;
+		AABBNode* acceleration_node;
 		ThreeDVector* trace(Ray* ray, int recursive_depth, Surface* except_surface);
 		bool hits_surface(Ray* ray, Surface* except_surface);
 		int num_hits_light(vector<Ray*> rays, Surface* surface);

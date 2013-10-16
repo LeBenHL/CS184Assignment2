@@ -1,4 +1,4 @@
-OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o raytracer.o sphere.o triangle.o 
+OBJS = as2.o lodepng.o point_light.o directional_light.o three_d_vector.o camera.o pixel.o ray.o scene.o surface.o sampler.o raytracer.o sphere.o triangle.o Bounds.o AABBNode.o
 CC = g++
 LDFLAGS = 
 INCLUDE = -I ./
@@ -23,16 +23,20 @@ ray.o: ray.h ray.cpp three_d_vector.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c ray.cpp -o ray.o
 scene.o: scene.h scene.cpp three_d_vector.h ray.h camera.h surface.h sampler.h raytracer.h light.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c scene.cpp -o scene.o
-surface.o: surface.h surface.cpp ray.h three_d_vector.h
+surface.o: surface.h surface.cpp ray.h three_d_vector.h Bounds.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c surface.cpp -o surface.o	
 sampler.o: sampler.h sampler.cpp three_d_vector.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c sampler.cpp -o sampler.o	
-raytracer.o: raytracer.h raytracer.cpp ray.h three_d_vector.h surface.h light.h
+raytracer.o: raytracer.h raytracer.cpp ray.h three_d_vector.h surface.h light.h AABBNode.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c raytracer.cpp -o raytracer.o
 sphere.o: sphere.h sphere.cpp surface.h three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c sphere.cpp -o sphere.o
 triangle.o: triangle.h triangle.cpp surface.h three_d_vector.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c triangle.cpp -o triangle.o
+Bounds.o: Bounds.h Bounds.cpp
+	$(CC) $(LDFLAGS) $(INCLUDE) -c Bounds.cpp -o Bounds.o
+AABBNode.o: AABBNode.h AABBNode.cpp Bounds.h surface.h three_d_vector.h
+	$(CC) $(LDFLAGS) $(INCLUDE) -c AABBNode.cpp -o AABBNode.o
 
 
 clean: 

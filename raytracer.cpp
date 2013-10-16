@@ -2,6 +2,7 @@
 
 RayTracer::RayTracer(vector<Surface*> _surfaces, vector<Light*> _lights, bool _soft_shadow) {
 	surfaces = _surfaces;
+	acceleration_node = new AABBNode(surfaces, 0);
 	lights = _lights;
 	soft_shadow = _soft_shadow;
 }
