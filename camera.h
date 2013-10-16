@@ -3,6 +3,9 @@
 #include "three_d_vector.h"
 #include "ray.h"
 #include <iostream>
+#include <vector>
+
+using namespace std;
 
 class Camera{
 	public:
@@ -13,6 +16,7 @@ class Camera{
 		// My UpVector
 		ThreeDVector* up;
 		// Focal Length (How far away am I from image plane)
+		float image_plane_length;
 		float focal_length;
 
 		bool dof;
@@ -26,7 +30,7 @@ class Camera{
 		float fov;
 		Camera(float, float, float, float, float, float, float, float, float, float);
 		~Camera();
-		Ray* get_view_ray(ThreeDVector*);
+		vector<Ray*> get_view_rays(ThreeDVector*);
 
 
 };

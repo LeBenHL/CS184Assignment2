@@ -7,8 +7,10 @@ Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light
 	recursive_depth = _recursive_depth;
 	grid_size = _grid_size;
 
+	float image_plane_length = 1;
+	camera->image_plane_length = image_plane_length;
 	camera->focal_length = focal_length;
-	sampler = new Sampler(width, height, camera->fov, focal_length);
+	sampler = new Sampler(width, height, camera->fov, image_plane_length);
 	tracer = new RayTracer(surfaces, lights, soft_shadow);
 }
 
@@ -21,10 +23,16 @@ ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {
 	vector<ThreeDVector*> samples = sampler->get_sample(x, y, grid_size);
 	ThreeDVector* color_summation = new ThreeDVector(0, 0, 0);	
 	for(vector<ThreeDVector*>::iterator it = samples.begin(); it != samples.end(); ++it) {
-    	Ray* view_ray = this->camera->get_view_ray(*it);
-    	ThreeDVector* color_sample = this->tracer->trace(view_ray, this->recursive_depth, NULL);
-    	color_summation->vector_add_bang(color_sample);
-    	delete color_sample;
+    	vector<Ray*> rays = this->camera->get_view_rays(*it);
+    	ThreeDVector* ray_color_summation = new ThreeDVector(0, 0, 0);
+    	for(vector<Ray*>::iterator r = rays.begin(); r != rays.end(); ++r) {
+    		Ray* view_ray = *r;
+	    	ThreeDVector* color_sample = this->tracer->trace(view_ray, this->recursive_depth, NULL);
+	    	ray_color_summation->vector_add_bang(color_sample);
+	    	delete color_sample;
+	    }
+	    ray_color_summation->scalar_multiply_bang(1.0 / rays.size());
+	    color_summation->vector_add_bang(ray_color_summation);
 	}
 
 	//Average out colors by number of samples

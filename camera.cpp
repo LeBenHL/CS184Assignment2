@@ -20,20 +20,10 @@ Camera::Camera(float lf_x, float lf_y, float lf_z, float la_x, float la_y, float
     delete pos_w;
 }
 
-Ray* Camera::get_view_ray(ThreeDVector* screen_pos) {
+vector<Ray*> Camera::get_view_rays(ThreeDVector* screen_pos) {
+    vector<Ray*> rays;
     ThreeDVector* origin = this->look_from->clone();
-    if (this->dof) {
-        //Perturb the Origin a bit
-        float camera_size = 0.1;
-        float scale_u = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
-        float scale_v = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
-        ThreeDVector* perturb_u = this->u->scalar_multiply(scale_u);
-        ThreeDVector* perturb_v = this->v->scalar_multiply(scale_v);
-        origin->vector_add_bang(perturb_u);
-        origin->vector_add_bang(perturb_v);
-    }
-   
-    ThreeDVector* scaled_w = this->w->scalar_multiply(-(this->focal_length));
+    ThreeDVector* scaled_w = this->w->scalar_multiply(-(this->image_plane_length));
     ThreeDVector* scaled_u = this->u->scalar_multiply(screen_pos->x);
     ThreeDVector* scaled_v = this->v->scalar_multiply(screen_pos->y);
     ThreeDVector* w_plus_u = scaled_w->vector_add(scaled_u);
@@ -45,7 +35,33 @@ Ray* Camera::get_view_ray(ThreeDVector* screen_pos) {
     delete scaled_v;
     delete w_plus_u;
 
-    return new Ray(origin, w_plus_u_plus_v, 0, numeric_limits<float>::infinity());
+    Ray* unperturbed_ray = new Ray(origin, w_plus_u_plus_v, 0, numeric_limits<float>::infinity());
+
+    if (this->dof) {
+        // DOF inspired by http://ray-tracer-concept.blogspot.com/2011/12/depth-of-field.html
+        ThreeDVector* point_aimed = unperturbed_ray->point_at(this->focal_length);
+        for (int di =0; di < 25; di++) { // shooting 25 random rays
+            ThreeDVector* camera_pos = this->look_from->clone();
+            //Perturb the Origin a bit
+            float camera_size = 0.1;
+            float scale_u = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
+            float scale_v = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
+            ThreeDVector* perturb_u = this->u->scalar_multiply(scale_u);
+            ThreeDVector* perturb_v = this->v->scalar_multiply(scale_v);
+            camera_pos->vector_add_bang(perturb_u);
+            camera_pos->vector_add_bang(perturb_v);
+
+            ThreeDVector* direction = point_aimed->vector_subtract(camera_pos);
+            rays.push_back(new Ray(camera_pos, direction, 0, numeric_limits<float>::infinity()));
+        }
+
+        delete point_aimed;
+        delete unperturbed_ray;
+    } else {
+        rays.push_back(unperturbed_ray);
+    }
+
+    return rays;
 
 }
 

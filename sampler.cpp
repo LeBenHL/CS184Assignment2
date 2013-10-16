@@ -4,13 +4,13 @@
 #include <iostream>
 using namespace std;
 
-Sampler::Sampler(int i_w, int i_h, float fov, float focal_length) {
+Sampler::Sampler(int i_w, int i_h, float fov, float image_plane_length) {
 	image_width = i_w;
 	image_height = i_h;
 
 	extern float PI;
 
-	float plane_height = tan((fov/2) * PI/180) * 2 * focal_length;
+	float plane_height = tan((fov/2) * PI/180) * 2 * image_plane_length;
 	float plane_width = plane_height * (float(image_width) / image_height);
 
 

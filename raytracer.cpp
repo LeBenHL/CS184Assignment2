@@ -132,7 +132,7 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	        shadow_rays.clear();
         } else {
         	Ray* shadow_ray = light->get_shadow_ray(point_hit);
-        	if (this->hits_surface(shadow_ray, surface)) {
+        	if (!this->hits_surface(shadow_ray, surface)) {
         		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
 		 		surface_color->vector_add_bang(specular_component);
 		        delete specular_component;
