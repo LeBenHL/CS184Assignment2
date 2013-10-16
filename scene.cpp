@@ -1,13 +1,13 @@
 #include "scene.h"
 
-Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth, int _grid_size, float focal_length, bool soft_shadow) {
+Scene::Scene(Camera* _camera, std::vector<Surface*> _surfaces, std::vector<Light*> _lights, int width, int height, int _recursive_depth, int _grid_size, long double focal_length, bool soft_shadow) {
 	camera = _camera;
 	surfaces = _surfaces;
 	lights = _lights;
 	recursive_depth = _recursive_depth;
 	grid_size = _grid_size;
 
-	float image_plane_length = 1;
+	long double image_plane_length = 1;
 	camera->image_plane_length = image_plane_length;
 	camera->focal_length = focal_length;
 	sampler = new Sampler(width, height, camera->fov, image_plane_length);

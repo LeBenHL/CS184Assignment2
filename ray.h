@@ -8,7 +8,7 @@
 using namespace std;
 
 struct Record{
-    float t_hit; 
+    long double t_hit; 
     ThreeDVector* position_hit;
     ThreeDVector* untransformed_position_hit;
 }; 
@@ -17,11 +17,11 @@ class Ray{
 	public:
 		ThreeDVector* direction;
 		ThreeDVector* position;
-		float t_min;
-		float t_max;
-		Ray(ThreeDVector* position, ThreeDVector* direction, float t_min, float t_max);
+		long double t_min;
+		long double t_max;
+		Ray(ThreeDVector* position, ThreeDVector* direction, long double t_min, long double t_max);
 		char* repr();
-		ThreeDVector* point_at(float t);
+		ThreeDVector* point_at(long double t);
 		~Ray();
 };
 

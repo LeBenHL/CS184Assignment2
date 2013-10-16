@@ -3,29 +3,29 @@
 #include <iostream>
 using namespace std;
 
-ThreeDVector::ThreeDVector(float _x, float _y, float _z) {
+ThreeDVector::ThreeDVector(long double _x, long double _y, long double _z) {
 	x = _x;
 	y = _y;
 	z = _z;
 }
 
-float ThreeDVector::magnitude(){
-	float x = this->x;
-	float y = this->y;
-	float z = this->z;
+long double ThreeDVector::magnitude(){
+	long double x = this->x;
+	long double y = this->y;
+	long double z = this->z;
 	return sqrt(x*x+y*y+z*z);
 }
 
 ThreeDVector* ThreeDVector::normalize(){
 	//cout << "BEFORE: " << this->x << ", " << this->y << ", " << this->z << endl;
-	float mag = magnitude();
+	long double mag = magnitude();
 	return new ThreeDVector(this->x / mag, this->y / mag, this->z / mag);
 	//cout << "AFTER: " << this->x << ", " << this->y << ", " << this->z << endl;
 }
 
 void ThreeDVector::normalize_bang(){
 	//cout << "BEFORE: " << this->x << ", " << this->y << ", " << this->z << endl;
-	float mag = magnitude();
+	long double mag = magnitude();
 	this->x /= mag;
 	this->y /= mag;
 	this->z /= mag;
@@ -34,16 +34,16 @@ void ThreeDVector::normalize_bang(){
 
 
 
-float ThreeDVector::dot_product(ThreeDVector* v){
+long double ThreeDVector::dot_product(ThreeDVector* v){
 	return this->x * v->x + this->y * v->y + this->z * v->z;
 }
 
 
-ThreeDVector* ThreeDVector::scalar_multiply(float k){	
+ThreeDVector* ThreeDVector::scalar_multiply(long double k){	
 	return new ThreeDVector(this->x * k, this->y * k, this->z * k);
 }
 
-void ThreeDVector::scalar_multiply_bang(float k){	
+void ThreeDVector::scalar_multiply_bang(long double k){	
 	this->x *= k;
 	this->y *= k;
 	this->z *= k;
@@ -77,6 +77,6 @@ ThreeDVector* ThreeDVector::clone(){
 
 char* ThreeDVector::repr() {
 	char* buffer = new char[1000];
-	sprintf(buffer, "<ThreeDVector, x = %0.2f, y = %0.2f, z = %0.2f>", this->x, this->y, this->z);
+	sprintf(buffer, "<ThreeDVector, x = %0.2Lf, y = %0.2Lf, z = %0.2Lf>", this->x, this->y, this->z);
 	return buffer;
 }

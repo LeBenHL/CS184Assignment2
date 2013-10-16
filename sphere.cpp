@@ -4,7 +4,7 @@
 
 #include "sphere.h"
 
-Sphere::Sphere(ThreeDVector* _center, float _radius) {
+Sphere::Sphere(ThreeDVector* _center, long double _radius) {
 	center = _center;
 	radius = _radius;
 }
@@ -31,8 +31,8 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 
 	//Implementation from Page 77 of the book
 	ThreeDVector* e_minus_c = ray->position->vector_subtract(this->center);
-	float d_dot_d = ray->direction->dot_product(ray->direction);
-	float discriminant = pow((ray->direction->dot_product(e_minus_c)), 2) - d_dot_d * (e_minus_c->dot_product(e_minus_c) - pow(this->radius, 2));
+	long double d_dot_d = ray->direction->dot_product(ray->direction);
+	long double discriminant = pow((ray->direction->dot_product(e_minus_c)), 2) - d_dot_d * (e_minus_c->dot_product(e_minus_c) - pow(this->radius, 2));
 	if (discriminant < 0) {
 		// WE DIDN'T HIT IT
 		delete e_minus_c;
@@ -43,12 +43,12 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 		return false;
 	}
 	ThreeDVector* neg_d = ray->direction->scalar_multiply(-1);
-	float neg_d_dot_e_minus_c = neg_d->dot_product(e_minus_c);
-	float sqrt_discriminant = sqrt(discriminant); 
-	float t_hit_pos = (neg_d_dot_e_minus_c + sqrt_discriminant) / d_dot_d; 
-	float t_hit_neg =  (neg_d_dot_e_minus_c - sqrt_discriminant) / d_dot_d; 
+	long double neg_d_dot_e_minus_c = neg_d->dot_product(e_minus_c);
+	long double sqrt_discriminant = sqrt(discriminant); 
+	long double t_hit_pos = (neg_d_dot_e_minus_c + sqrt_discriminant) / d_dot_d; 
+	long double t_hit_neg =  (neg_d_dot_e_minus_c - sqrt_discriminant) / d_dot_d; 
 	
-	vector<float> t_hits;
+	vector<long double> t_hits;
 	if (t_hit_pos <= ray->t_max && t_hit_pos >= ray->t_min) {
 		t_hits.push_back(t_hit_pos);
 	}
@@ -66,7 +66,7 @@ bool Sphere::hit(Ray* _ray, Record* record) {
 		return false;
 	}
 
-	float t_hit = *std::min_element(t_hits.begin(), t_hits.end());
+	long double t_hit = *std::min_element(t_hits.begin(), t_hits.end());
 
 	record->t_hit = t_hit;
 

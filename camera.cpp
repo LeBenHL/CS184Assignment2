@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Camera::Camera(float lf_x, float lf_y, float lf_z, float la_x, float la_y, float la_z, float up_x, float up_y, float up_z, float field_of_view) {
+Camera::Camera(long double lf_x, long double lf_y, long double lf_z, long double la_x, long double la_y, long double la_z, long double up_x, long double up_y, long double up_z, long double field_of_view) {
     look_from = new ThreeDVector(lf_x, lf_y, lf_z);
     look_at = new ThreeDVector(la_x - lf_x, la_y - lf_y, la_z -lf_z);
     up = new ThreeDVector(up_x, up_y, up_z);
@@ -35,7 +35,7 @@ vector<Ray*> Camera::get_view_rays(ThreeDVector* screen_pos) {
     delete scaled_v;
     delete w_plus_u;
 
-    Ray* unperturbed_ray = new Ray(origin, w_plus_u_plus_v, 0, numeric_limits<float>::infinity());
+    Ray* unperturbed_ray = new Ray(origin, w_plus_u_plus_v, 0, numeric_limits<long double>::infinity());
 
     if (this->dof) {
         // DOF inspired by http://ray-tracer-concept.blogspot.com/2011/12/depth-of-field.html
@@ -43,16 +43,16 @@ vector<Ray*> Camera::get_view_rays(ThreeDVector* screen_pos) {
         for (int di =0; di < 25; di++) { // shooting 25 random rays
             ThreeDVector* camera_pos = this->look_from->clone();
             //Perturb the Origin a bit
-            float camera_size = 0.1;
-            float scale_u = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
-            float scale_v = (float(rand()) / RAND_MAX * camera_size) - camera_size/2;
+            long double camera_size = 0.1;
+            long double scale_u = (((long double) rand()) / RAND_MAX * camera_size) - camera_size/2;
+            long double scale_v = (((long double) rand()) / RAND_MAX * camera_size) - camera_size/2;
             ThreeDVector* perturb_u = this->u->scalar_multiply(scale_u);
             ThreeDVector* perturb_v = this->v->scalar_multiply(scale_v);
             camera_pos->vector_add_bang(perturb_u);
             camera_pos->vector_add_bang(perturb_v);
 
             ThreeDVector* direction = point_aimed->vector_subtract(camera_pos);
-            rays.push_back(new Ray(camera_pos, direction, 0, numeric_limits<float>::infinity()));
+            rays.push_back(new Ray(camera_pos, direction, 0, numeric_limits<long double>::infinity()));
         }
 
         delete point_aimed;

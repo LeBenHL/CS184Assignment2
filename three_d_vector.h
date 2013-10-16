@@ -3,16 +3,16 @@
 
 class ThreeDVector{
 	public:
-		float x;
-		float y;
-		float z;
-		ThreeDVector(float=0, float=0, float=0);
-		float magnitude();
+		long double x;
+		long double y;
+		long double z;
+		ThreeDVector(long double=0, long double=0, long double=0);
+		long double magnitude();
 		ThreeDVector* normalize();
 		void normalize_bang();
-		float dot_product(ThreeDVector*);
-		ThreeDVector* scalar_multiply(float k);
-		void scalar_multiply_bang(float k);
+		long double dot_product(ThreeDVector*);
+		ThreeDVector* scalar_multiply(long double k);
+		void scalar_multiply_bang(long double k);
 		ThreeDVector* vector_add(ThreeDVector*);
 		void vector_add_bang(ThreeDVector*);
 		ThreeDVector* vector_subtract(ThreeDVector*);

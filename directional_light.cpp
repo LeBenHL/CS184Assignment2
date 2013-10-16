@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-DirectionalLight::DirectionalLight(float _x, float _y, float _z, float r, float g, float b) {
+DirectionalLight::DirectionalLight(long double _x, long double _y, long double _z, long double r, long double g, long double b) {
 	direction = new ThreeDVector(_x, _y, _z);
 	//cout << "BEFORE: " << direction->x << ", " << direction->y << ", " << direction->z << endl;
 	direction->normalize_bang();
@@ -17,7 +17,7 @@ ThreeDVector* DirectionalLight::get_light_direction_from(ThreeDVector* position)
 }
 
 Ray* DirectionalLight::get_shadow_ray(ThreeDVector* position) {
-	return new Ray(position->clone(), this->direction->scalar_multiply(-1), 0, numeric_limits<float>::infinity());
+	return new Ray(position->clone(), this->direction->scalar_multiply(-1), 0, numeric_limits<long double>::infinity());
 }
 
 vector<Ray*> DirectionalLight::get_shadow_rays(ThreeDVector* position, int sample_size) {

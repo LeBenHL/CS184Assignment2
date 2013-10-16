@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-PointLight::PointLight(float _x, float _y, float _z, float r, float g, float b) {
+PointLight::PointLight(long double _x, long double _y, long double _z, long double r, long double g, long double b) {
 	position = new ThreeDVector(_x, _y, _z);
 	red = r;
 	green = g;
@@ -19,7 +19,7 @@ ThreeDVector* PointLight::get_light_direction_from(ThreeDVector* position) {
 
 Ray* PointLight::get_shadow_ray(ThreeDVector* position) {
 	ThreeDVector* direction = this->position->vector_subtract(position);
-	float mag = direction->magnitude();
+	long double mag = direction->magnitude();
 	direction->normalize_bang();
 	return new Ray(position->clone(), direction, 0, mag);
 }
@@ -28,22 +28,22 @@ vector<Ray*> PointLight::get_shadow_rays(ThreeDVector* position, int sample_size
 	// SOFT SHADOWING TAKEN FROM SJSU
 	vector<Ray*> rays;
 	for (int i=0; i<sample_size; i++) {
-		extern float PI;
-		float u = float(rand()) / RAND_MAX;
-		float v = float(rand()) / RAND_MAX;
+		extern long double PI;
+		long double u = ((long double) rand()) / RAND_MAX;
+		long double v = ((long double) rand()) / RAND_MAX;
 
-		float q = 2 * PI * u;
-		float f = acos(2 * v - 1);
+		long double q = 2 * PI * u;
+		long double f = acos(2 * v - 1);
 
-		float delta_x = this->radius * cos(q) * sin(f);
-		float delta_y = this->radius * sin(q) * sin(f);
-		float delta_z = this->radius * cos(f);
+		long double delta_x = this->radius * cos(q) * sin(f);
+		long double delta_y = this->radius * sin(q) * sin(f);
+		long double delta_z = this->radius * cos(f);
 
 		ThreeDVector* delta = new ThreeDVector(delta_x, delta_y, delta_z);
 		ThreeDVector* light_position = this->position->vector_add(delta);
 
 		ThreeDVector* direction = light_position->vector_subtract(position);
-		float mag = direction->magnitude();
+		long double mag = direction->magnitude();
 		direction->normalize_bang();
 		Ray* ray = new Ray(position->clone(), direction, 0, mag);
 		rays.push_back(ray);

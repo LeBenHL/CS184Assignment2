@@ -16,8 +16,8 @@ class Camera{
 		// My UpVector
 		ThreeDVector* up;
 		// Focal Length (How far away am I from image plane)
-		float image_plane_length;
-		float focal_length;
+		long double image_plane_length;
+		long double focal_length;
 
 		bool dof;
 
@@ -27,8 +27,8 @@ class Camera{
 		ThreeDVector* w;
 
 
-		float fov;
-		Camera(float, float, float, float, float, float, float, float, float, float);
+		long double fov;
+		Camera(long double, long double, long double, long double, long double, long double, long double, long double, long double, long double);
 		~Camera();
 		vector<Ray*> get_view_rays(ThreeDVector*);
 

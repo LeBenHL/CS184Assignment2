@@ -16,7 +16,7 @@ using namespace Eigen;
 using namespace std;
 
 ThreeDVector* global_ambient = new ThreeDVector(0, 0, 0);
-float PI = 3.14159265359;
+long double PI = 3.14159265359;
 
 //store variables and set stuff at the end
 int width = 1000, height = 1000;
@@ -35,7 +35,7 @@ ThreeDVector* diffuse = new ThreeDVector(0, 0, 0);
 //SPECULAR
 ThreeDVector* specular = new ThreeDVector(0, 0, 0);
 //SHININESS
-float shininess = 1;
+long double shininess = 1;
 //EMISSION
 ThreeDVector* emission = new ThreeDVector(0, 0, 0);
 //VERTICES
@@ -48,7 +48,7 @@ int grid_size = 1;
 stack<Matrix4f> matrix_stack;
 Matrix4f current_matrix = Matrix4f::Identity();
 //
-float focal_length = 1;
+long double focal_length = 1;
 //
 bool soft_shadow = false;
 
@@ -88,9 +88,9 @@ void parseObj(const char* filename) {
       //Valid commands:
       //v x y z [w]
       else if(!splitline[0].compare("v")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
         ThreeDVector* vertex = new ThreeDVector(x, y, z);
         vertices.push_back(vertex);
       }
@@ -185,16 +185,16 @@ void loadScene(std::string file) {
       //camera lookfromx lookfromy lookfromz lookatx lookaty lookatz upx upy upz fov
       //  speciﬁes the camera in the standard way, as in homework 2.
       else if(!splitline[0].compare("camera")) {
-        float from_x = atof(splitline[1].c_str());
-        float from_y = atof(splitline[2].c_str());
-        float from_z = atof(splitline[3].c_str());
-        float lookat_x = atof(splitline[4].c_str());
-        float lookat_y = atof(splitline[5].c_str());
-        float lookat_z = atof(splitline[6].c_str());
-        float up_x = atof(splitline[7].c_str());
-        float up_y = atof(splitline[8].c_str());
-        float up_z = atof(splitline[9].c_str());
-        float fov = atof(splitline[10].c_str());
+        long double from_x = atof(splitline[1].c_str());
+        long double from_y = atof(splitline[2].c_str());
+        long double from_z = atof(splitline[3].c_str());
+        long double lookat_x = atof(splitline[4].c_str());
+        long double lookat_y = atof(splitline[5].c_str());
+        long double lookat_z = atof(splitline[6].c_str());
+        long double up_x = atof(splitline[7].c_str());
+        long double up_y = atof(splitline[8].c_str());
+        long double up_z = atof(splitline[9].c_str());
+        long double fov = atof(splitline[10].c_str());
 
         delete camera;
         camera = new Camera(from_x, from_y, from_z, lookat_x, lookat_y, lookat_z, up_x, up_y, up_z, fov);
@@ -211,10 +211,10 @@ void loadScene(std::string file) {
         //   Store 4 numbers
         //   Store current property values
         //   Store current top of matrix stack
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
-        float radius = atof(splitline[4].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
+        long double radius = atof(splitline[4].c_str());
         ThreeDVector* center = new ThreeDVector(x, y, z);
         Sphere* sphere = new Sphere(center, radius);
         sphere->diffuse = diffuse->clone();
@@ -242,9 +242,9 @@ void loadScene(std::string file) {
       //  Deﬁnes a vertex at the given location.
       //  The vertex is put into a pile, starting to be numbered at 0.
       else if(!splitline[0].compare("vertex")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
         // Create a new vertex with these 3 values, store in some array
         ThreeDVector* vertex = new ThreeDVector(x, y, z);
         vertices.push_back(vertex);
@@ -254,12 +254,12 @@ void loadScene(std::string file) {
       //  The vertex and vertexnormal set of vertices are completely independent
       //  (as are maxverts and maxvertnorms).
       else if(!splitline[0].compare("vertexnormal")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
-        float nx = atof(splitline[4].c_str());
-        float ny = atof(splitline[5].c_str());
-        float nz = atof(splitline[6].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
+        long double nx = atof(splitline[4].c_str());
+        long double ny = atof(splitline[5].c_str());
+        long double nz = atof(splitline[6].c_str());
         // Create a new vertex+normal with these 6 values, store in some array
         ThreeDVector* vertex = new ThreeDVector(x, y, z);
         normal_vertices.push_back(vertex);
@@ -336,9 +336,9 @@ void loadScene(std::string file) {
       //translate x y z
       //  A translation 3-vector
       else if(!splitline[0].compare("translate")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
         Matrix4f m = Matrix4f::Identity();
         m(0,3) = x;
         m(1,3) = y;
@@ -348,32 +348,32 @@ void loadScene(std::string file) {
       //rotate x y z angle
       //  Rotate by angle (in degrees) about the given axis as in OpenGL.
       else if(!splitline[0].compare("rotate")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
-        float angle = atof(splitline[4].c_str());
-        float theta = angle * PI / 180;
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
+        long double angle = atof(splitline[4].c_str());
+        long double theta = angle * PI / 180;
         ThreeDVector* rotation_axis = new ThreeDVector(x, y, z);
         rotation_axis->normalize_bang();
         
         Matrix4f m = Matrix4f::Identity();
 
         //From Wikipedia Rotation matrix from axis and angle
-        float cos_theta = cos(theta);
-        float one_minus_cos_theta = 1 - cos(theta);
-        float sin_theta = sin(theta);
+        long double cos_theta = cos(theta);
+        long double one_minus_cos_theta = 1 - cos(theta);
+        long double sin_theta = sin(theta);
 
-        float ux_square = rotation_axis->x * rotation_axis->x;
-        float uy_square = rotation_axis->y * rotation_axis->y;
-        float uz_square = rotation_axis->z * rotation_axis->z;
+        long double ux_square = rotation_axis->x * rotation_axis->x;
+        long double uy_square = rotation_axis->y * rotation_axis->y;
+        long double uz_square = rotation_axis->z * rotation_axis->z;
 
-        float ux_uy = rotation_axis->x * rotation_axis->y;
-        float ux_uz = rotation_axis->x * rotation_axis->z;
-        float uy_uz = rotation_axis->y * rotation_axis->z;
+        long double ux_uy = rotation_axis->x * rotation_axis->y;
+        long double ux_uz = rotation_axis->x * rotation_axis->z;
+        long double uy_uz = rotation_axis->y * rotation_axis->z;
 
-        float ux_times_sin_theta = rotation_axis->x * sin_theta;
-        float uy_times_sin_theta = rotation_axis->y * sin_theta;
-        float uz_times_sin_theta = rotation_axis->z * sin_theta;
+        long double ux_times_sin_theta = rotation_axis->x * sin_theta;
+        long double uy_times_sin_theta = rotation_axis->y * sin_theta;
+        long double uz_times_sin_theta = rotation_axis->z * sin_theta;
 
         m(0, 0) = cos_theta + ux_square * one_minus_cos_theta;
         m(0, 1) = ux_uy * one_minus_cos_theta - uz_times_sin_theta;
@@ -391,9 +391,9 @@ void loadScene(std::string file) {
       //scale x y z
       //  Scale by the corresponding amount in each axis (a non-uniform scaling).
       else if(!splitline[0].compare("scale")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
         Matrix4f m = Matrix4f::Identity();
         m(0,0) = x;
         m(1,1) = y;
@@ -426,12 +426,12 @@ void loadScene(std::string file) {
       //directional x y z r g b
       //  The direction to the light source, and the color, as in OpenGL.
       else if(!splitline[0].compare("directional")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
-        float r = atof(splitline[4].c_str());
-        float g = atof(splitline[5].c_str());
-        float b = atof(splitline[6].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
+        long double r = atof(splitline[4].c_str());
+        long double g = atof(splitline[5].c_str());
+        long double b = atof(splitline[6].c_str());
         // add light to scene...
         DirectionalLight* light = new DirectionalLight(x, y, z, r, g, b);
         light->apply_transformation(Matrix4f(current_matrix));
@@ -440,12 +440,12 @@ void loadScene(std::string file) {
       //point x y z r g b
       //  The location of a point source and the color, as in OpenGL.
       else if(!splitline[0].compare("point")) {
-        float x = atof(splitline[1].c_str());
-        float y = atof(splitline[2].c_str());
-        float z = atof(splitline[3].c_str());
-        float r = atof(splitline[4].c_str());
-        float g = atof(splitline[5].c_str());
-        float b = atof(splitline[6].c_str());
+        long double x = atof(splitline[1].c_str());
+        long double y = atof(splitline[2].c_str());
+        long double z = atof(splitline[3].c_str());
+        long double r = atof(splitline[4].c_str());
+        long double g = atof(splitline[5].c_str());
+        long double b = atof(splitline[6].c_str());
         // add light to scene...
         PointLight* light = new PointLight(x, y, z, r, g, b);
         light->apply_transformation(Matrix4f(current_matrix));
@@ -463,27 +463,27 @@ void loadScene(std::string file) {
       //  The global ambient color to be added for each object 
       //  (default is .2,.2,.2)
       else if(!splitline[0].compare("ambient")) {
-        float r = atof(splitline[1].c_str());
-        float g = atof(splitline[2].c_str());
-        float b = atof(splitline[3].c_str());
+        long double r = atof(splitline[1].c_str());
+        long double g = atof(splitline[2].c_str());
+        long double b = atof(splitline[3].c_str());
         global_ambient = new ThreeDVector(r, g, b);
       }
 
       //diﬀuse r g b
       //  speciﬁes the diﬀuse color of the surface.
       else if(!splitline[0].compare("diffuse")) {
-        float r = atof(splitline[1].c_str());
-        float g = atof(splitline[2].c_str());
-        float b = atof(splitline[3].c_str());
+        long double r = atof(splitline[1].c_str());
+        long double g = atof(splitline[2].c_str());
+        long double b = atof(splitline[3].c_str());
         delete diffuse;
         diffuse = new ThreeDVector(r, g, b);
       }
       //specular r g b 
       //  speciﬁes the specular color of the surface.
       else if(!splitline[0].compare("specular")) {
-        float r = atof(splitline[1].c_str());
-        float g = atof(splitline[2].c_str());
-        float b = atof(splitline[3].c_str());
+        long double r = atof(splitline[1].c_str());
+        long double g = atof(splitline[2].c_str());
+        long double b = atof(splitline[3].c_str());
         delete specular;
         specular = new ThreeDVector(r, g, b);
       }
@@ -496,9 +496,9 @@ void loadScene(std::string file) {
       //emission r g b
       //  gives the emissive color of the surface.
       else if(!splitline[0].compare("emission")) {
-        float r = atof(splitline[1].c_str());
-        float g = atof(splitline[2].c_str());
-        float b = atof(splitline[3].c_str());
+        long double r = atof(splitline[1].c_str());
+        long double g = atof(splitline[2].c_str());
+        long double b = atof(splitline[3].c_str());
         delete emission;
         emission = new ThreeDVector(r, g, b);
       }
@@ -534,14 +534,14 @@ void loadScene(std::string file) {
     image.resize(width * height * 4);
     int new_y;
     ThreeDVector* color;
-    float r, g, b;
+    long double r, g, b;
     for (int y = 0; y < height; y++)
       for (int x = 0; x < width; x++) {
         new_y = height - 1 - y;
         color = scene->get_color(x, y);
-        r = min(color->x * 255, float(255));
-        g = min(color->y * 255, float(255.0));
-        b = min(color->z * 255, float(255.0));
+        r = min(color->x * 255, ((long double) 255.0));
+        g = min(color->y * 255, ((long double) 255.0));
+        b = min(color->z * 255, ((long double) 255.0));
         image[4 * width * new_y + 4 * x + 0] = r;
         image[4 * width * new_y + 4 * x + 1] = g;
         image[4 * width * new_y + 4 * x + 2] = b;

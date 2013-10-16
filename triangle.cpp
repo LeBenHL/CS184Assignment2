@@ -15,47 +15,47 @@ Triangle::Triangle(ThreeDVector* _a, ThreeDVector* _b, ThreeDVector* _c){
 bool Triangle::hit(Ray* ray, Record* record){
 
 	//matrix A
-	float a = this->a->x - this->b->x;
-	float b = this->a->y - this->b->y;
-	float c = this->a->z - this->b->z;
-	float d = this->a->x - this->c->x;
-	float e = this->a->y - this->c->y;
-	float f = this->a->z - this->c->z;
-	float g = ray->direction->x;
-	float h = ray->direction->y;
-	float i = ray->direction->z;
+	long double a = this->a->x - this->b->x;
+	long double b = this->a->y - this->b->y;
+	long double c = this->a->z - this->b->z;
+	long double d = this->a->x - this->c->x;
+	long double e = this->a->y - this->c->y;
+	long double f = this->a->z - this->c->z;
+	long double g = ray->direction->x;
+	long double h = ray->direction->y;
+	long double i = ray->direction->z;
 
 	//vector b
-	float j = this->a->x - ray->position->x;
-	float k = this->a->y - ray->position->y;
-	float l = this->a->z - ray->position->z;
+	long double j = this->a->x - ray->position->x;
+	long double k = this->a->y - ray->position->y;
+	long double l = this->a->z - ray->position->z;
 	
-	//reuse floats to reduce number of operations
-	float ei_minus_hf = e*i-h*f;
-	float gf_minus_di = g*f-d*i;
-	float dh_minus_eg = d*h-e*g;
-	float ak_minus_jb = a*k-j*b;
-	float jc_minus_al = j*c-a*l;
-	float bl_minus_kc = b*l-k*c;
+	//reuse long doubles to reduce number of operations
+	long double ei_minus_hf = e*i-h*f;
+	long double gf_minus_di = g*f-d*i;
+	long double dh_minus_eg = d*h-e*g;
+	long double ak_minus_jb = a*k-j*b;
+	long double jc_minus_al = j*c-a*l;
+	long double bl_minus_kc = b*l-k*c;
 
 	//determinant of A
-	float m = a*ei_minus_hf + b*gf_minus_di + c*dh_minus_eg;
+	long double m = a*ei_minus_hf + b*gf_minus_di + c*dh_minus_eg;
 
-	float t = f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc;
+	long double t = f*ak_minus_jb + e*jc_minus_al + d*bl_minus_kc;
 	t /= -m;
 
 	if (t < ray->t_min || t > ray->t_max) {
 		return false;
 	}
 
-	float gamma = i*ak_minus_jb + h*jc_minus_al + g*bl_minus_kc;
+	long double gamma = i*ak_minus_jb + h*jc_minus_al + g*bl_minus_kc;
 	gamma /= m;
 
 	if(gamma < 0 || gamma > 1){
 		return false;
 	}
 
-	float beta = j*ei_minus_hf + k*gf_minus_di + l*dh_minus_eg;
+	long double beta = j*ei_minus_hf + k*gf_minus_di + l*dh_minus_eg;
 	beta /= m;
 
 	if(beta < 0 || beta > (1-gamma)){
@@ -73,8 +73,8 @@ bool Triangle::hit(Ray* ray, Record* record){
 
 ThreeDVector* Triangle::get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) {
 	ThreeDVector* negative_normal = this->normal->scalar_multiply(-1);
-	float negative_normal_dot_product = negative_normal->dot_product(view_vector);
-	float normal_dot_product = this->normal->dot_product(view_vector);
+	long double negative_normal_dot_product = negative_normal->dot_product(view_vector);
+	long double normal_dot_product = this->normal->dot_product(view_vector);
 
 	if (normal_dot_product > negative_normal_dot_product) {
 		return negative_normal;

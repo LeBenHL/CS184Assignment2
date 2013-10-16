@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Ray::Ray(ThreeDVector* _position, ThreeDVector* _direction, float _t_min, float _t_max) {
+Ray::Ray(ThreeDVector* _position, ThreeDVector* _direction, long double _t_min, long double _t_max) {
 	position = _position;
 	direction = _direction;
 	t_min = _t_min;
@@ -19,7 +19,7 @@ char* Ray::repr() {
 	return buffer;
 }
 
-ThreeDVector* Ray::point_at(float t){
+ThreeDVector* Ray::point_at(long double t){
 	ThreeDVector* t_times_direction = this->direction->scalar_multiply(t);
 	ThreeDVector* point = this->position->vector_add(t_times_direction);
 	delete t_times_direction;

@@ -39,10 +39,10 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 		if (depth > 0) {
 			//REFLECTIONS. TODO USE STACK?
 			ThreeDVector* normalized_ray_direction = ray->direction->normalize();
-			float d_dot_n = normalized_ray_direction->dot_product(normal);
+			long double d_dot_n = normalized_ray_direction->dot_product(normal);
 			ThreeDVector* two_d_dot_n_times_n = normal->scalar_multiply(2*d_dot_n);
 			ThreeDVector* reflect_direction = normalized_ray_direction->vector_subtract(two_d_dot_n_times_n);
-			Ray* reflect_ray = new Ray(point_hit->clone(), reflect_direction->clone(), 0, numeric_limits<float>::infinity());
+			Ray* reflect_ray = new Ray(point_hit->clone(), reflect_direction->clone(), 0, numeric_limits<long double>::infinity());
 
 			delete normalized_ray_direction;
 			delete two_d_dot_n_times_n;
@@ -117,7 +117,7 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	 		int num_hits_light = this->num_hits_light(shadow_rays, surface);
 	 		if  (num_hits_light > 0) {
 	 		//if (true) {
-	 			float multiplier = float(num_hits_light) / number_samples;
+	 			long double multiplier = ((long double) num_hits_light) / number_samples;
 
 	 			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
 	 			specular_component->scalar_multiply_bang(multiplier);
@@ -150,14 +150,14 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 }
 
 ThreeDVector* RayTracer::calculate_diffuse_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* diffuse, ThreeDVector* normal) {
-  float dot_product = light_direction->dot_product(normal);
+  long double dot_product = light_direction->dot_product(normal);
   ThreeDVector light = ThreeDVector(l->red, l->green, l->blue);
-  light.scalar_multiply_bang(max(dot_product, float(0)));
+  light.scalar_multiply_bang(max(dot_product, ((long double) 0)));
   return diffuse->vector_multiply(&light);
 }
 
-ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* specular, ThreeDVector* normal, ThreeDVector* view_direction, float power_coefficient) {
-	float l_dot_n = light_direction->dot_product(normal);
+ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* specular, ThreeDVector* normal, ThreeDVector* view_direction, long double power_coefficient) {
+	long double l_dot_n = light_direction->dot_product(normal);
 	ThreeDVector* two_l_dot_n_times_n = normal->scalar_multiply(2*l_dot_n);
 	ThreeDVector* negative_light_direction = light_direction->scalar_multiply(-1);
 	ThreeDVector* reflect = negative_light_direction->vector_add(two_l_dot_n_times_n);
@@ -165,9 +165,9 @@ ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light
 	delete two_l_dot_n_times_n;
 	delete negative_light_direction;
 
-	float r_dot_v = view_direction->dot_product(reflect);
+	long double r_dot_v = view_direction->dot_product(reflect);
 	ThreeDVector light = ThreeDVector(l->red, l->green, l->blue);
-	light.scalar_multiply_bang(pow(max(r_dot_v, float(0)), power_coefficient));
+	light.scalar_multiply_bang(pow(max(r_dot_v, ((long double) 0)), power_coefficient));
 	return specular->vector_multiply(&light);
 }
 

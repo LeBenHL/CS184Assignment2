@@ -4,7 +4,7 @@ output dof.png
 camera 0 0 20 0 0 0 0 1 0 85
 
 maxdepth 0
-focalLength 30
+focalLength 3
 dof
 
 diffuse 0 .5 .5

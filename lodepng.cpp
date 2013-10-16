@@ -659,7 +659,7 @@ A coin can be multiple coins (when they're merged)
 typedef struct Coin
 {
   uivector symbols;
-  float weight; /*the sum of all weights in this coin*/
+  long double weight; /*the sum of all weights in this coin*/
 } Coin;
 
 static void coin_init(Coin* c)
@@ -718,7 +718,7 @@ static void sort_coins(Coin* data, size_t amount)
       size_t j = i + gap;
       if(data[j].weight < data[i].weight)
       {
-        float temp = data[j].weight; data[j].weight = data[i].weight; data[i].weight = temp;
+        long double temp = data[j].weight; data[j].weight = data[i].weight; data[i].weight = temp;
         uivector_swap(&data[i].symbols, &data[j].symbols);
         swapped = 1;
       }
@@ -734,7 +734,7 @@ static unsigned append_symbol_coins(Coin* coins, const unsigned* frequencies, un
   {
     if(frequencies[i] != 0) /*only include symbols that are present*/
     {
-      coins[j].weight = frequencies[i] / (float)sum;
+      coins[j].weight = frequencies[i] / (long double)sum;
       uivector_push_back(&coins[j].symbols, i);
       j++;
     }
@@ -5229,9 +5229,9 @@ static void filterScanline(unsigned char* out, const unsigned char* scanline, co
 }
 
 /* log2 approximation. A slight bit faster than std::log. */
-static float flog2(float f)
+static long double flog2(long double f)
 {
-  float result = 0;
+  long double result = 0;
   while(f > 32) { result += 4; f /= 16; }
   while(f > 2) { result++; f /= 2; }
   return result + 1.442695f * (f * f * f / 3 - 3 * f * f / 2 + 3 * f - 1.83333f);
@@ -5346,9 +5346,9 @@ static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, 
   }
   else if(strategy == LFS_ENTROPY)
   {
-    float sum[5];
+    long double sum[5];
     ucvector attempt[5]; /*five filtering attempts, one for each filter type*/
-    float smallest = 0;
+    long double smallest = 0;
     unsigned type, bestType = 0;
     unsigned count[256];
 
@@ -5370,7 +5370,7 @@ static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, 
         sum[type] = 0;
         for(x = 0; x < 256; x++)
         {
-          float p = count[x] / (float)(linebytes + 1);
+          long double p = count[x] / (long double)(linebytes + 1);
           sum[type] += count[x] == 0 ? 0 : flog2(1 / p) * p;
         }
         /*check if this is smallest sum (or if type == 0 it's the first case so always store the values)*/

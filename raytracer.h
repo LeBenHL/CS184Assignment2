@@ -24,7 +24,7 @@ class RayTracer{
 	private:
 		ThreeDVector* calculate_diffuse_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* diffuse, ThreeDVector* normal);
 		ThreeDVector* calculate_color(Surface* surface, vector<Light*> lights, ThreeDVector* normal, ThreeDVector* point_hit, ThreeDVector* view_direction);
-		ThreeDVector* calculate_specular_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* specular, ThreeDVector* normal, ThreeDVector* view_direction, float power_coefficient);
+		ThreeDVector* calculate_specular_helper(Light* l, ThreeDVector* light_direction, ThreeDVector* specular, ThreeDVector* normal, ThreeDVector* view_direction, long double power_coefficient);
 };
 
 #endif
