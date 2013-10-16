@@ -51,6 +51,8 @@ Matrix4f current_matrix = Matrix4f::Identity();
 long double focal_length = 1;
 //
 bool soft_shadow = false;
+//attenuation
+ThreeDVector* attenuation = new ThreeDVector(1, 0, 0);
 
 void createPng(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height)
 {
@@ -448,6 +450,7 @@ void loadScene(std::string file) {
         long double b = atof(splitline[6].c_str());
         // add light to scene...
         PointLight* light = new PointLight(x, y, z, r, g, b);
+        light->attenuation = attenuation->clone();
         light->apply_transformation(Matrix4f(current_matrix));
         lights.push_back(light);
       }
@@ -455,9 +458,11 @@ void loadScene(std::string file) {
       //  Sets the constant, linear and quadratic attenuations 
       //  (default 1,0,0) as in OpenGL.
       else if(!splitline[0].compare("attenuation")) {
-        // const: atof(splitline[1].c_str())
-        // linear: atof(splitline[2].c_str())
-        // quadratic: atof(splitline[3].c_str())
+        delete attenuation;
+        float c = atof(splitline[1].c_str());
+        float l = atof(splitline[2].c_str());
+        float q = atof(splitline[3].c_str());
+        attenuation = new ThreeDVector(c, l, q);
       }
       //ambient r g b
       //  The global ambient color to be added for each object 

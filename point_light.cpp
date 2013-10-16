@@ -63,6 +63,19 @@ void PointLight::apply_transformation(Eigen::Matrix4f transformation) {
     this->position = new ThreeDVector(new_pos[0], new_pos[1], new_pos[2]);
 }
 
+double long PointLight::get_attenuation_factor(ThreeDVector* position) {
+	ThreeDVector* difference = this->position->vector_subtract(position);
+	double long distance = sqrt(difference->dot_product(difference));
+
+	ThreeDVector* distances = new ThreeDVector(1, distance, pow(distance, 2));
+	double long denominator = this->attenuation->dot_product(distances);
+
+	delete difference;
+	delete distances;
+
+	return 1.0 / denominator;
+}
+
 PointLight::~PointLight(){
 	delete position;
 }

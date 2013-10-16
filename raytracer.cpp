@@ -118,14 +118,17 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	 		if  (num_hits_light > 0) {
 	 		//if (true) {
 	 			long double multiplier = ((long double) num_hits_light) / number_samples;
+	 			long double attenuation_factor = light->get_attenuation_factor(point_hit);
 
 	 			ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
 	 			specular_component->scalar_multiply_bang(multiplier);
+	 			specular_component->scalar_multiply_bang(attenuation_factor);
 		 		surface_color->vector_add_bang(specular_component);
 		        delete specular_component;
 
 	 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
 	 			diffuse_component->scalar_multiply_bang(multiplier);
+	 			diffuse_component->scalar_multiply_bang(attenuation_factor);
 	 			surface_color->vector_add_bang(diffuse_component);
 	        	delete diffuse_component;
 	        }
@@ -133,11 +136,15 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
         } else {
         	Ray* shadow_ray = light->get_shadow_ray(point_hit);
         	if (!this->hits_surface(shadow_ray, surface)) {
+        		long double attenuation_factor = light->get_attenuation_factor(point_hit);
+
         		ThreeDVector* specular_component = this->calculate_specular_helper(light, light_direction, surface->specular, normal, view_direction, surface->power_coefficient);
+        		specular_component->scalar_multiply_bang(attenuation_factor);
 		 		surface_color->vector_add_bang(specular_component);
 		        delete specular_component;
 
 	 			ThreeDVector* diffuse_component = this->calculate_diffuse_helper(light, light_direction, surface->diffuse, normal);
+	 			diffuse_component->scalar_multiply_bang(attenuation_factor);
 	 			surface_color->vector_add_bang(diffuse_component);
 	        	delete diffuse_component;
         	}

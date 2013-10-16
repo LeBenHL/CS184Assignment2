@@ -14,6 +14,7 @@ class Light {
     virtual Ray* get_shadow_ray(ThreeDVector* postion) = 0;
     virtual vector<Ray*> get_shadow_rays(ThreeDVector* position, int sample_size) = 0;
     virtual void apply_transformation(Eigen::Matrix4f transformation) = 0;
+    virtual double long get_attenuation_factor(ThreeDVector* position) = 0;
 };
 
 #endif

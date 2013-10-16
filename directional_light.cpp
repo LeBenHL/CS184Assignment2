@@ -35,6 +35,10 @@ void DirectionalLight::apply_transformation(Eigen::Matrix4f transformation) {
     this->direction->normalize_bang();
 }
 
+double long DirectionalLight::get_attenuation_factor(ThreeDVector* position) {
+	return 1.0;
+}
+
 DirectionalLight::~DirectionalLight(){
 	delete direction;
 }
