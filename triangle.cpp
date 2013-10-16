@@ -101,7 +101,7 @@ void Triangle::apply_transformation(Eigen::Matrix4f transformation) {
     this->c = new ThreeDVector(new_c[0], new_c[1], new_c[2]);
 }
 
-Bounds* Triangle::get_bounds() {
+void Triangle::get_bounds() {
 
 	long double x_min = min(this->a->x, min(this->b->x, this->c->x));
 	long double x_max = max(this->a->x, max(this->b->x, this->c->x));
@@ -110,7 +110,7 @@ Bounds* Triangle::get_bounds() {
 	long double z_min = min(this->a->z, min(this->b->z, this->c->z));
 	long double z_max = max(this->a->z, max(this->b->z, this->c->z));
 
-	return new Bounds(x_min, x_max, y_min, y_max, z_min, z_max);
+	this->bounds = new Bounds(x_min, x_max, y_min, y_max, z_min, z_max);
 }
 
 Triangle::~Triangle(){

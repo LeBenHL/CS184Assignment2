@@ -128,6 +128,7 @@ void parseObj(const char* filename) {
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
         triangle->apply_transformation(Matrix4f(current_matrix));
+        triangle->get_bounds();
         surfaces.push_back(triangle);
       }
     }
@@ -224,6 +225,7 @@ void loadScene(std::string file) {
         sphere->power_coefficient = shininess;
         sphere->emission = emission->clone();
         sphere->apply_transformation(Matrix4f(current_matrix));
+        sphere->get_bounds();
         surfaces.push_back(sphere);
       }
       //maxverts number
@@ -297,6 +299,7 @@ void loadScene(std::string file) {
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
         triangle->apply_transformation(Matrix4f(current_matrix));
+        triangle->get_bounds();
         surfaces.push_back(triangle);
       }
       //trinormal v1 v2 v3
@@ -332,6 +335,7 @@ void loadScene(std::string file) {
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
         triangle->apply_transformation(Matrix4f(current_matrix));
+        triangle->get_bounds();
         surfaces.push_back(triangle);
       }
 
@@ -388,6 +392,8 @@ void loadScene(std::string file) {
         m(2, 2) = cos_theta + uz_square * one_minus_cos_theta;        
 
         current_matrix = current_matrix * m;
+
+        delete rotation_axis;
         // Update top of matrix stack
       }
       //scale x y z
@@ -468,6 +474,7 @@ void loadScene(std::string file) {
       //  The global ambient color to be added for each object 
       //  (default is .2,.2,.2)
       else if(!splitline[0].compare("ambient")) {
+        delete global_ambient;
         long double r = atof(splitline[1].c_str());
         long double g = atof(splitline[2].c_str());
         long double b = atof(splitline[3].c_str());

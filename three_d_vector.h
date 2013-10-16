@@ -1,5 +1,6 @@
 #ifndef THREEDVECTOR_H
 #define THREEDVECTOR_H
+#include <Eigen/Dense>
 
 class ThreeDVector{
 	public:
@@ -19,6 +20,7 @@ class ThreeDVector{
 		ThreeDVector* vector_multiply(ThreeDVector*);
 		ThreeDVector* cross_product(ThreeDVector*);
 		ThreeDVector* clone();
+		void transform_bang(Eigen::Matrix4f transformation, bool point);
 		char* repr();
 };
 

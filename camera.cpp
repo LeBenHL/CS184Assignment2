@@ -51,6 +51,9 @@ vector<Ray*> Camera::get_view_rays(ThreeDVector* screen_pos) {
             camera_pos->vector_add_bang(perturb_u);
             camera_pos->vector_add_bang(perturb_v);
 
+            delete perturb_u;
+            delete perturb_v;
+
             ThreeDVector* direction = point_aimed->vector_subtract(camera_pos);
             rays.push_back(new Ray(camera_pos, direction, 0, numeric_limits<long double>::infinity()));
         }

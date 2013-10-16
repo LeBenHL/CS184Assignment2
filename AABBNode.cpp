@@ -3,21 +3,21 @@
 struct x_comp{
     inline bool operator()(const pair<Surface*, ThreeDVector*> a, const pair<Surface*, ThreeDVector*> b)
     {   
-        a.second->x < b.second->x;
+        return a.second->x < b.second->x;
     }   
 };
 
 struct y_comp{
     inline bool operator()(const pair<Surface*, ThreeDVector*> a, const pair<Surface*, ThreeDVector*> b)
     {   
-        a.second->y < b.second->y;
+        return a.second->y < b.second->y;
     }   
 };
 
 struct z_comp{
     inline bool operator()(const pair<Surface*, ThreeDVector*> a, const pair<Surface*, ThreeDVector*> b)
     {   
-        a.second->z < b.second->z;
+        return a.second->z < b.second->z;
     }   
 };
 
@@ -31,14 +31,15 @@ AABBNode::AABBNode(vector<Surface*> _surfaces, int axis) {
 		vector<pair<Surface*, ThreeDVector*> > sorted_surfaces;
 		for(vector<Surface*>::iterator it = surfaces.begin(); it != surfaces.end(); ++it) {
 			Surface* surface = *it;
-			Bounds* bounds = surface->get_bounds();		this->enclose(bounds);
+			Bounds* bounds = surface->bounds->clone();
+			this->enclose(bounds);
 			double x_min = bounds->x_min;
 			double y_min = bounds->y_min;
 			double z_min = bounds->z_min;
-			sorted_surfaces.push_back(make_pair(surface, new ThreeDVector(x_min, y_min, z_min)));
+			ThreeDVector* mins = new ThreeDVector(x_min, y_min, z_min);
+			sorted_surfaces.push_back(make_pair(surface, mins));
 			delete bounds;
 		}
-
 		switch (axis % 3) {
 			case 0:
 			    sort(sorted_surfaces.begin(), sorted_surfaces.end(), x_comp());
@@ -75,16 +76,10 @@ AABBNode::AABBNode(vector<Surface*> _surfaces, int axis) {
 		if (right_surfaces.size() > 0) {
 	 	   this->right = new AABBNode(right_surfaces, axis + 1);
 	 	}
-	} else {
-		bounds = (surfaces[0])->get_bounds();
+	} else if (surfaces.size() == 1) {
+		bounds = (surfaces[0])->bounds->clone();
 	}
 
-	cout << this->bounds->x_min << endl;
-	cout << this->bounds->y_min << endl;
-	cout << this->bounds->z_min << endl;
-	cout << this->bounds->x_max << endl;
-	cout << this->bounds->y_max << endl;
-	cout << this->bounds->z_max << endl << endl;
 }
 
 void AABBNode::enclose(Bounds* bounds) {
@@ -102,4 +97,31 @@ void AABBNode::enclose(Bounds* bounds) {
 	} else {
 		this->bounds = bounds->clone();
 	}
+}
+
+bool AABBNode::is_leaf_node() {
+	return (this->right == NULL && this->left == NULL); 
+}
+
+vector<Surface*> AABBNode::relevant_surfaces(Ray* ray) {
+	vector<Surface*> relevant_surfaces;
+
+	if (this->bounds->hits(ray)) {
+		if (this->is_leaf_node()) {
+			if (this->surfaces.size() == 1) {
+				relevant_surfaces = this->surfaces;
+			} else {
+				cout << "WTF MODE" << endl;
+				exit(1);
+			}
+		} else {
+			vector<Surface*> left_relevant_surfaces = this->left->relevant_surfaces(ray);
+			vector<Surface*> right_relevant_surfaces = this->right->relevant_surfaces(ray);
+			relevant_surfaces.reserve( left_relevant_surfaces.size() + right_relevant_surfaces.size() );
+			relevant_surfaces.insert( relevant_surfaces.end(), left_relevant_surfaces.begin(), left_relevant_surfaces.end() );
+			relevant_surfaces.insert( relevant_surfaces.end(), right_relevant_surfaces.begin(), right_relevant_surfaces.end() );		
+		}
+	} 
+
+	return relevant_surfaces;
 }

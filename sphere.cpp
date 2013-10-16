@@ -113,7 +113,7 @@ void Sphere::apply_transformation(Eigen::Matrix4f transformation) {
     this->inverse_transpose = this->inverse.transpose();
 }
 
-Bounds* Sphere::get_bounds() {
+void Sphere::get_bounds() {
 
 	long double x_min = this->center->x - radius;
 	long double x_max = this->center->x + radius;
@@ -122,7 +122,10 @@ Bounds* Sphere::get_bounds() {
 	long double z_min = this->center->z - radius;
 	long double z_max = this->center->z + radius;
 
-	return new Bounds(x_min, x_max, y_min, y_max, z_min, z_max);
+	Bounds* bounds = new Bounds(x_min, x_max, y_min, y_max, z_min, z_max);
+	bounds->apply_transformation(this->transformation);
+
+	this->bounds = bounds;
 }
 
 Sphere::~Sphere() {

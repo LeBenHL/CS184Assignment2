@@ -33,9 +33,9 @@ sphere.o: sphere.h sphere.cpp surface.h three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c sphere.cpp -o sphere.o
 triangle.o: triangle.h triangle.cpp surface.h three_d_vector.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c triangle.cpp -o triangle.o
-Bounds.o: Bounds.h Bounds.cpp
+Bounds.o: Bounds.h Bounds.cpp three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c Bounds.cpp -o Bounds.o
-AABBNode.o: AABBNode.h AABBNode.cpp Bounds.h surface.h three_d_vector.h
+AABBNode.o: AABBNode.h AABBNode.cpp Bounds.h surface.h three_d_vector.h ray.h
 	$(CC) $(LDFLAGS) $(INCLUDE) -c AABBNode.cpp -o AABBNode.o
 
 

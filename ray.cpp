@@ -7,6 +7,8 @@ Ray::Ray(ThreeDVector* _position, ThreeDVector* _direction, long double _t_min, 
 	direction = _direction;
 	t_min = _t_min;
 	t_max = _t_max;
+
+	inv_direction = new ThreeDVector(1.0/direction->x, 1.0/direction->y, 1.0/direction->z);
 }
 
 char* Ray::repr() {
@@ -30,4 +32,5 @@ ThreeDVector* Ray::point_at(long double t){
 Ray::~Ray(){
 	delete position;
 	delete direction;
+	delete inv_direction;
 }

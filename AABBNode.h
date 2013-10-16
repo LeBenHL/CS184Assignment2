@@ -4,6 +4,7 @@
 #include "Bounds.h"
 #include "surface.h"
 #include "three_d_vector.h"
+#include "ray.h"
 
 using namespace std;
 
@@ -18,6 +19,8 @@ class AABBNode {
   	// Surfaces in this bounding box
   	vector<Surface*> surfaces;
   	AABBNode(vector<Surface*> surfaces, int axis);
+  	vector<Surface*> relevant_surfaces(Ray* ray);
+  	bool is_leaf_node();
   private:
   	void enclose(Bounds* bounds);
 };

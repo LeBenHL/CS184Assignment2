@@ -1,5 +1,8 @@
 #ifndef BOUNDS_H
 #define BOUNDS_H
+#include <Eigen/Dense>
+#include "three_d_vector.h"
+#include "ray.h"
 
 using namespace std;
 
@@ -14,6 +17,8 @@ class Bounds {
   	long double z_min;
   	long double z_max;
     Bounds* clone();
+    bool hits(Ray* ray);
+    void apply_transformation(Eigen::Matrix4f transformation);
 };
 
 #endif

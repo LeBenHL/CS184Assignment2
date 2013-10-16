@@ -24,15 +24,18 @@ ThreeDVector* Scene::get_color_helper(int x, int y, int grid_size) {
 	ThreeDVector* color_summation = new ThreeDVector(0, 0, 0);	
 	for(vector<ThreeDVector*>::iterator it = samples.begin(); it != samples.end(); ++it) {
     	vector<Ray*> rays = this->camera->get_view_rays(*it);
+    	int rays_size = rays.size();
     	ThreeDVector* ray_color_summation = new ThreeDVector(0, 0, 0);
     	for(vector<Ray*>::iterator r = rays.begin(); r != rays.end(); ++r) {
     		Ray* view_ray = *r;
 	    	ThreeDVector* color_sample = this->tracer->trace(view_ray, this->recursive_depth, NULL);
 	    	ray_color_summation->vector_add_bang(color_sample);
 	    	delete color_sample;
+	    	delete view_ray;
 	    }
-	    ray_color_summation->scalar_multiply_bang(1.0 / rays.size());
+	    ray_color_summation->scalar_multiply_bang(1.0 / rays_size);
 	    color_summation->vector_add_bang(ray_color_summation);
+	 	delete *it;
 	}
 
 	//Average out colors by number of samples

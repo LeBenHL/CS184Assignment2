@@ -19,6 +19,10 @@ class Ray{
 		ThreeDVector* position;
 		long double t_min;
 		long double t_max;
+
+		//For AABB hit
+		ThreeDVector* inv_direction;
+
 		Ray(ThreeDVector* position, ThreeDVector* direction, long double t_min, long double t_max);
 		char* repr();
 		ThreeDVector* point_at(long double t);

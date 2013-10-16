@@ -14,12 +14,13 @@ class Surface {
 		Eigen::Matrix4f transformation;
 		Eigen::Matrix4f inverse;
 		Eigen::Matrix4f inverse_transpose;
+		Bounds* bounds;
 		long double power_coefficient;
 
 		virtual bool hit(Ray* ray, Record* record) = 0;
 		virtual ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) = 0;
 		virtual void apply_transformation(Eigen::Matrix4f transformation) = 0;
-		virtual Bounds* get_bounds() = 0;
+		virtual void get_bounds() = 0;
 };
 
 #endif

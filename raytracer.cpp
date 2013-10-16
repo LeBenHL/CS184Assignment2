@@ -11,7 +11,8 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 	bool hit = false;
 	Surface* first_hit;
 	Record* record = new Record();
-	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
+	vector<Surface*> relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	for(vector<Surface*>::iterator it = relevant_surfaces.begin(); it != relevant_surfaces.end(); ++it) {
 		Surface* surface = *it;
 		if ((except_surface != NULL) && (surface == except_surface)) {
 			continue;
@@ -75,7 +76,8 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 
 bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
 	Record* record = new Record();
-	for(vector<Surface*>::iterator it = this->surfaces.begin(); it != this->surfaces.end(); ++it) {
+	vector<Surface*> relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	for(vector<Surface*>::iterator it = relevant_surfaces.begin(); it != relevant_surfaces.end(); ++it) {
 		Surface* surface = *it;
 		if ((except_surface != NULL) && (surface == except_surface)) {
 			continue;
@@ -100,6 +102,7 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 		} else {
 			//cout << (*i)->repr() << endl;
 		}
+		delete *i;
 	}
 	return count;
 }
@@ -133,7 +136,6 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	 			surface_color->vector_add_bang(diffuse_component);
 	        	delete diffuse_component;
 	        }
-	        shadow_rays.clear();
         } else {
         	Ray* shadow_ray = light->get_shadow_ray(point_hit);
         	if (!this->hits_surface(shadow_ray, surface)) {
@@ -149,6 +151,7 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	 			surface_color->vector_add_bang(diffuse_component);
 	        	delete diffuse_component;
         	}
+        	delete shadow_ray;
         } 
         
         delete light_direction;
