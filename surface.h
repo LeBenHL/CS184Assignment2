@@ -16,6 +16,7 @@ class Surface {
 		Eigen::Matrix4f inverse_transpose;
 		Bounds* bounds;
 		long double power_coefficient;
+		float transparency;
 
 		virtual bool hit(Ray* ray, Record* record) = 0;
 		virtual ThreeDVector* get_normal(ThreeDVector* surface_point, ThreeDVector* view_vector) = 0;

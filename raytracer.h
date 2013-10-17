@@ -17,6 +17,7 @@ class RayTracer{
 		vector<Surface*> surfaces;
 		vector<Light*> lights;
 		bool soft_shadow;
+		bool accelerated;
 		AABBNode* acceleration_node;
 		ThreeDVector* trace(Ray* ray, int recursive_depth, Surface* except_surface);
 		bool hits_surface(Ray* ray, Surface* except_surface);

@@ -99,6 +99,13 @@ void Triangle::apply_transformation(Eigen::Matrix4f transformation) {
     this->a = new ThreeDVector(new_a[0], new_a[1], new_a[2]);
     this->b = new ThreeDVector(new_b[0], new_b[1], new_b[2]);
     this->c = new ThreeDVector(new_c[0], new_c[1], new_c[2]);
+
+    ThreeDVector* b_minus_a = this->b->vector_subtract(this->a);
+	ThreeDVector* c_minus_a = this->c->vector_subtract(this->a);
+	this->normal = b_minus_a->cross_product(c_minus_a);
+	this->normal->normalize_bang();
+	delete b_minus_a;
+	delete c_minus_a; 
 }
 
 void Triangle::get_bounds() {

@@ -11,7 +11,13 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 	bool hit = false;
 	Surface* first_hit;
 	Record* record = new Record();
-	vector<Surface*> relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	extern bool accelerate;
+	vector<Surface*> relevant_surfaces;
+	if(accelerate){
+		relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	}else{
+		relevant_surfaces = this->surfaces;
+	}
 	for(vector<Surface*>::iterator it = relevant_surfaces.begin(); it != relevant_surfaces.end(); ++it) {
 		Surface* surface = *it;
 		if ((except_surface != NULL) && (surface == except_surface)) {
@@ -58,6 +64,9 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 			delete reflect_ray;
 			delete ray_color;
 			delete reflection_color;
+
+			//REFRACTION
+			
 		}
 
 		delete point_hit;
@@ -76,7 +85,13 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 
 bool RayTracer::hits_surface(Ray* ray, Surface* except_surface) {
 	Record* record = new Record();
-	vector<Surface*> relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	extern bool accelerate;
+	vector<Surface*> relevant_surfaces;
+	if(accelerate){
+		relevant_surfaces = this->acceleration_node->relevant_surfaces(ray);
+	}else{
+		relevant_surfaces = this->surfaces;
+	}
 	for(vector<Surface*>::iterator it = relevant_surfaces.begin(); it != relevant_surfaces.end(); ++it) {
 		Surface* surface = *it;
 		if ((except_surface != NULL) && (surface == except_surface)) {
