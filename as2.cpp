@@ -38,8 +38,6 @@ ThreeDVector* specular = new ThreeDVector(0, 0, 0);
 long double shininess = 1;
 //EMISSION
 ThreeDVector* emission = new ThreeDVector(0, 0, 0);
-//TRANSPARENCY
-long double transparency = 0;
 //VERTICES
 vector<ThreeDVector*> vertices;
 //Normal Vertices
@@ -228,7 +226,6 @@ void loadScene(std::string file) {
         sphere->specular = specular->clone();
         sphere->power_coefficient = shininess;
         sphere->emission = emission->clone();
-        sphere->transparency = transparency;
         sphere->apply_transformation(Matrix4f(current_matrix));
         sphere->get_bounds();
         surfaces.push_back(sphere);
@@ -303,7 +300,6 @@ void loadScene(std::string file) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        triangle->transparency = transparency;
         triangle->apply_transformation(Matrix4f(current_matrix));
         triangle->get_bounds();
         surfaces.push_back(triangle);
@@ -340,7 +336,6 @@ void loadScene(std::string file) {
         triangle->specular = specular->clone();
         triangle->power_coefficient = shininess;
         triangle->emission = emission->clone();
-        triangle->transparency = transparency;
         triangle->apply_transformation(Matrix4f(current_matrix));
         triangle->get_bounds();
         surfaces.push_back(triangle);
@@ -538,10 +533,7 @@ void loadScene(std::string file) {
         soft_shadow = true;
       } else if(!splitline[0].compare("accelerate")) {
         accelerate = true;
-      } else if(!splitline[0].compare("transparency")) {
-        transparency = atof(splitline[1].c_str());
-      }
-      else {
+      } else {
         std::cerr << "Unknown command: " << splitline[0] << std::endl;
       }
     }

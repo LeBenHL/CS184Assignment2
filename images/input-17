@@ -1,0 +1,34 @@
+size 640 640
+output image-17.png
+
+accelerate
+
+softShadow
+
+camera 0 0 20 0 0 -1 0 1 0 60
+
+point 10 10 10 .8 .8 .8
+
+pushTransform
+rotate 0 1 0 60
+rotate 0 0 1 130
+rotate 1 0 0 90
+
+diffuse .1 1 .1
+specular .8 .8 .8
+shininess 50
+
+obj uh60.obj
+
+popTransform
+
+vertex -20 -20 -10
+vertex 20 -20 -10
+vertex 20 20 -10
+vertex -20 20 -10
+
+diffuse .4 .4 .4
+specular .1 .1 .1
+shininess 50
+tri 0 1 2
+tri 0 2 3

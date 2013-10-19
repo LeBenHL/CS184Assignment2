@@ -64,9 +64,6 @@ ThreeDVector* RayTracer::trace(Ray* ray, int depth, Surface* except_surface) {
 			delete reflect_ray;
 			delete ray_color;
 			delete reflection_color;
-
-			//REFRACTION
-			
 		}
 
 		delete point_hit;
@@ -117,7 +114,6 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 		} else {
 			//cout << (*i)->repr() << endl;
 		}
-		delete *i;
 	}
 	return count;
 }
@@ -134,6 +130,7 @@ int RayTracer::num_hits_light(vector<Ray*> rays, Surface* except_surface) {
 	 		int number_samples = 32;
 	 		vector<Ray*> shadow_rays = light->get_shadow_rays(point_hit, number_samples);
 	 		int num_hits_light = this->num_hits_light(shadow_rays, surface);
+	 		shadow_rays.clear();
 	 		if  (num_hits_light > 0) {
 	 		//if (true) {
 	 			long double multiplier = ((long double) num_hits_light) / number_samples;
@@ -198,5 +195,5 @@ ThreeDVector* RayTracer::calculate_specular_helper(Light* l, ThreeDVector* light
 }
 
 RayTracer::~RayTracer() {
-	
+	delete acceleration_node;
 }

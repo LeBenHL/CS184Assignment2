@@ -1,0 +1,33 @@
+size 640 640
+output wolf_deer_translate.png
+
+accelerate
+
+camera 0 0 8 0 0 -1 0 1 0 60
+
+directional 0 0 -1 .8 .8 .8
+directional 0 -1 0 .8 .8 .8
+
+pushTransform
+translate -2 -2 0
+rotate 0 1 0 90
+
+diffuse .1 .1 .6
+specular .8 .8 .8
+shininess 50
+
+obj Wolf.obj
+
+popTransform
+
+pushTransform
+translate 2 3 -12
+translate 2 -2 0
+
+diffuse .1 .6 .1
+specular .8 .8 .8
+shininess 50
+
+obj Deer.obj
+
+popTransform

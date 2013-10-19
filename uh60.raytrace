@@ -1,0 +1,16 @@
+size 640 640
+output uh60.png
+
+accelerate
+
+aa 2
+
+camera -20 -2 0 1 -2 0 0 0 1 60
+
+directional 1 0 0 .8 .8 .8
+
+diffuse .1 1 .1
+specular .8 .8 .8
+shininess 50
+
+obj uh60.obj
