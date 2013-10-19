@@ -1,0 +1,80 @@
+size 640 640
+output image-06.png
+
+accelerate
+
+camera 0 0 20 0 0 -1 0 1 0 60
+
+directional 0 -.6 -1 .8 .8 .8
+
+pushTransform
+rotate 0 1 0 30
+
+diffuse 0 .8 .8
+specular 1 1 1
+shininess 50
+sphere 6 0 0 3
+
+#BODY
+diffuse 1 .5 .4
+specular 0 0 0
+shininess 1
+sphere 0 0 0 1.5
+
+pushTransform
+scale .4 .4 .4
+
+#LEFT LEG
+pushTransform
+scale 2 1 1
+translate -1.3 -4 0
+
+diffuse .9 .15 .2
+sphere 0 0 0 1
+
+popTransform
+
+#RIGHT LEG
+pushTransform
+scale 2 1 1
+translate 1.3 -4 0
+
+diffuse .9 .15 .2
+sphere 0 0 0 1
+
+popTransform
+
+#LEFT ARM
+pushTransform
+translate -4 2 0
+rotate 0 0 -1 30
+scale 2 1 1
+
+diffuse 1 .5 .4
+sphere 0 0 0 1
+
+popTransform
+
+#RIGHT ARM
+pushTransform
+translate 4 -1 0
+rotate 0 0 -1 20
+scale 2 1 1
+
+diffuse 1 .5 .4
+sphere 0 0 0 1
+
+popTransform
+
+vertex -20 -20 -10
+vertex 20 -20 -10
+vertex 20 20 -10
+vertex -20 20 -10
+
+diffuse .7 .7 .7
+specular 1 1 1
+shininess 50
+tri 0 1 2
+tri 0 2 3
+
+popTransform

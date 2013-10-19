@@ -1,0 +1,5 @@
+Command: ./as2 input-15
+Time: ~55s
+Features: shadowing under directional light
+Comment: free .obj files downloaded courtesy of http://tf3dm.com
+

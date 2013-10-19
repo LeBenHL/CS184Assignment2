@@ -1,0 +1,4 @@
+Command: ./as2 input-07
+Time: ~20s
+Features: AABB tree acceleration, Phong Shading
+

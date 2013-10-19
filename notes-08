@@ -1,0 +1,6 @@
+Command: ./as2 input-08
+Time: ~10s
+Features: reading simple .obj files, writing to png file
+Comment: free .obj files downloaded courtesy of http://tf3dm.com
+
+
